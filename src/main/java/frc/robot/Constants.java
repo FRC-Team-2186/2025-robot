@@ -13,6 +13,15 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  // Elevator Motor Constants
+  public static final int LEFT_ELEVATOR_MOTOR_CAN_ID = -1; // TODO: FILL OUT!!!
+  public static final int RIGHT_ELEVATOR_MOTOR_CAN_ID = -1; // TODO: FILL OUT!!!
+
+  // Elevator Limit Switch Constants
+  public static final int TOP_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = -1; // TODO: FILL OUT!!!
+  public static final int BOTTOM_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = -1; // TODO: FILL OUT!!!
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
