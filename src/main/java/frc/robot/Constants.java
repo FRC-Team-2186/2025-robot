@@ -22,6 +22,9 @@ public final class Constants {
   public static final int TOP_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = -1; // TODO: FILL OUT!!!
   public static final int BOTTOM_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = -1; // TODO: FILL OUT!!!
 
+  // Elevator Encoder Constants
+  public static final int ELEVATOR_ABSOLUTE_ENCODER_OFFSET = -1; // TODO: FILL OUT!!!
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }

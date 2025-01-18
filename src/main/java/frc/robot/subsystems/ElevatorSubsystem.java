@@ -7,11 +7,16 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -32,12 +37,28 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final DigitalInput mElevatorLimitSwitchTop = 
     new DigitalInput(Constants.TOP_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL);
 
-
   /** TODO: decide whether we want the encoder to be set as relative or absolute & declare it here. 
    * declaring absolute for now
   */
   private SparkAbsoluteEncoder mElevatorEncoder;
 
+  // SysId routine to model the behavior of our elevator subsystem
+  private final SysIdRoutine mElevatorSysIdRoutine;
+
+  // define sample size of sliding window to calculate velocity
+  private final MedianFilter mElevatorVelocityFilter = new MedianFilter(32);
+
+  // we need to define a PID control loop so we can monitor where the elevator is & where it needs to go
+  private final ProfiledPIDController mElevatorPidController;
+
+  // defining a variable motor speed
+  private double mElevatorMotorSpeed = 0.0;
+
+  // defining a boolean to control whether elevator Pid is enabled
+  private boolean mElevatorPidControllerEnabled = false;
+
+  // configuration obj to configure the motor controller
+  SparkFlexConfig config = new SparkFlexConfig();
 
   /** End Class Variables */
 
@@ -55,47 +76,32 @@ public class ElevatorSubsystem extends SubsystemBase {
     // TODO: define l or r motor to be attached to encoder - using right for now
     mElevatorEncoder = mRightElevatorMotor.getAbsoluteEncoder();
 
+    // configuring the motor controllers
+    // arg = how often we want the position to be measured
+    config.signals.primaryEncoderPositionPeriodMs(5);
+    // arg = sampling depth of encoder in bits
+    config.absoluteEncoder.averageDepth(64);
+    // position of encoder in "zero" position, aka resting position of elevator
+    config.absoluteEncoder.zeroOffset(Constants.ELEVATOR_ABSOLUTE_ENCODER_OFFSET);
+    // what the motors should do when no input is given to the controller - in this case, brake
+    config.idleMode(IdleMode.kBrake);
+
+
   }
 
   
-  /** Command to make elevator reach L2 of reef from any position
-   * Can reuse in Auto 
-  */
-  public Command l2Command() {
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
-  }
-
-  /** Command to make elevator reach L3 of reef from any position 
-   * Can reuse in Auto
-  */
-  public Command l3Command() {
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
-  }
-
-  /** Command to make elevator reach L4 of reef from any position 
-   * Can reuse in Auto
-  */
-  public Command l4Command() {
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
-  }
-
-  /** Command to make elevator return to starting (resting) position
-   * Can reuse in Auto
+  /**
+   * Example command factory method.
+   *
+   * @return a command
    */
-  public Command elevatorRestCommand(){
+  public Command exampleMethodCommand() {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
-      () -> {
-        // code here
-      });
+        () -> {
+          /* one-time action goes here */
+        });
   }
 
   /**
