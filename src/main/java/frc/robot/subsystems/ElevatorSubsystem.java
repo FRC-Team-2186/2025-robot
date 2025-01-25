@@ -10,6 +10,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.MedianFilter;
@@ -19,6 +20,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 
+@Logged
 public class ElevatorSubsystem extends SubsystemBase {
   /** SETTING UP CLASS VARIABLES */
 
@@ -119,7 +122,26 @@ public class ElevatorSubsystem extends SubsystemBase {
       new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0, 0));
     mElevatorPidController.setGoal(getEncoderPositionMeters()); // TODO: idk if we need this?
     mElevatorPidController.setTolerance(0.05); // TODO: tweak
-  }
+
+    var tab = Shuffleboard.getTab("Elevator");
+    tab.addNumber("setpoint",this::getElevatorMotorSpeed);
+    tab.addNumber(
+      "Right Elevator Motor Applied Voltage",
+      () -> mRightElevatorMotor.getAppliedOutput() * mRightElevatorMotor.getBusVoltage());
+    tab.addNumber(
+        "Left Elevator Motor Applied Voltage", 
+        () -> mLeftElevatorMotor.getAppliedOutput() * mRightElevatorMotor.getBusVoltage());
+    tab.addNumber("Encoder Position (Distance)", () -> getElevatorPosition().in(Units.Meters));
+    tab.addNumber("Encoder Position (Meters)", () -> getEncoderPositionMeters());
+    tab.addNumber(
+        "Encoder Linear Velocity (Meters/Second)", () -> getElevatorVelocity().in(Units.MetersPerSecond));
+    tab.addBoolean("Is the Elevator in a safe position", () -> isElevatorSafe());
+    tab.addBoolean("At Bottom", this::atBottom);
+    tab.addBoolean("At Top", this::atTop);
+    tab.add("Top Limit Switch", mElevatorLimitSwitchTop);
+    tab.add("Bottom Limit Switch", mElevatorLimitSwitchBottom);
+    tab.add("PID Controller", mElevatorPidController);
+    }
 
 
   /* MOTOR FUNCTIONS */
