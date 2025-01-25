@@ -13,14 +13,21 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.MedianFilter;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 
 public class ElevatorSubsystem extends SubsystemBase {
-  /** Setting Up Class Variables */
+  /** SETTING UP CLASS VARIABLES */
 
   // Elevator Motors
   private final SparkFlex mLeftElevatorMotor;
@@ -60,7 +67,10 @@ public class ElevatorSubsystem extends SubsystemBase {
   // configuration obj to configure the motor controller
   SparkFlexConfig config = new SparkFlexConfig();
 
-  /** End Class Variables */
+  // rate limiter for elevator
+  private final SlewRateLimiter mElevatorRateLimiter = new SlewRateLimiter(5);
+
+  /** END CLASS VARIABLES */
 
   
   /** Default Constructor that creates a new ElevatorSubsystem. 
@@ -86,8 +96,202 @@ public class ElevatorSubsystem extends SubsystemBase {
     // what the motors should do when no input is given to the controller - in this case, brake
     config.idleMode(IdleMode.kBrake);
 
+    /** initializing the sysid routine 
+     * 
+    */
+    mElevatorSysIdRoutine = new SysIdRoutine(
+            new SysIdRoutine.Config(),
+            new SysIdRoutine.Mechanism(
+              (volts) -> {
+                var voltage = volts.in(Units.Volts);
+                SmartDashboard.putNumber("Elevator Raw Voltage", voltage);
+                mLeftElevatorMotor.setVoltage(voltage);
+                mRightElevatorMotor.setVoltage(-voltage);
+              },
+              this::handleSysIdLog,
+              this));
 
+
+    /** initializing PID controller 
+     * args: proportional coefficient, integral coefficiet, derivative coefficient, and constraints for velocity & acceleration
+     * TODO: fill out Pid values!!! */
+    mElevatorPidController = 
+      new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0, 0));
+    mElevatorPidController.setGoal(getEncoderPositionMeters()); // TODO: idk if we need this?
+    mElevatorPidController.setTolerance(0.05); // TODO: tweak
   }
+
+
+  /* MOTOR FUNCTIONS */
+
+  // gets the elevator motor speed
+  public double getElevatorMotorSpeed() {
+    return mElevatorMotorSpeed;
+  }
+
+  // sets the elevator motor speed
+  public void setElevatorMotorSpeed(double pMotorSpeed) {
+    mElevatorMotorSpeed = pMotorSpeed;
+  }
+
+  public void stopElevatorMotors() {
+    mLeftElevatorMotor.set(0);
+    mRightElevatorMotor.set(0);
+  }
+
+  public void setElevatorMotorValues(double pMotorSpeed){
+    if (pMotorSpeed > 0.0 && atTop()) {
+      pMotorSpeed = 0.0;
+    }
+    if (pMotorSpeed < 0.0 && atBottom()) {
+      pMotorSpeed = 0.0;
+    }
+
+    SmartDashboard.putNumber("Elevator: Raw Voltage", pMotorSpeed);
+
+    mRightElevatorMotor.setVoltage(-pMotorSpeed);
+    mLeftElevatorMotor.setVoltage(pMotorSpeed);
+  }
+  /* END MOTOR FUNCTIONS */
+
+
+
+  /* ENCODER FUNCTIONS */
+
+  // tells us if the elevator is in it's resting position bsed on the bottom limit switch
+  public boolean atBottom() {
+    return !mElevatorLimitSwitchBottom.get();
+  }
+
+  // tells us if the elevator is at its max height based on the top limit switch
+  public boolean atTop() {
+    return mElevatorLimitSwitchTop.get();
+  }
+
+  // gets position of encoder/elevator in meters -> returned as a Distance obj
+  public Distance getElevatorPosition() {
+    // TODO: need to convert rotations to meters
+    // meters per rotation * rotations
+    return Units.Meters.of(mElevatorEncoder.getPosition());
+  }
+
+  // gets position of encoder/elevator in meters -> returned as a double
+  public double getEncoderPositionMeters() {
+    // TODO: need to convert rotations to meters
+    // meters per rotation * rotations
+    return getElevatorPosition().in(Units.Meters);
+  }
+
+  /* gets linear velocity of the elevator at a point in time (calculated over a sliding window) 
+   * units = meters / second
+  */
+  public LinearVelocity getElevatorVelocity() {
+    var velocityRotationsPerSecond = mElevatorEncoder.getVelocity();
+    var filteredVelocity = mElevatorVelocityFilter.calculate(velocityRotationsPerSecond);
+    // TODO -> calculate rotations per second * meters per rotation
+    return Units.MetersPerSecond.of(filteredVelocity);
+  } 
+
+  // tells us if the elevator is at a safe height
+  // Note: maybe this should be < slightly taller than L4?
+  public boolean isElevatorSafe() {
+    return getEncoderPositionMeters() <= Constants.ELEVATOR_MAX_SAFE_POSITION_METERS;
+  }
+
+  // how far we need to raise the elevator to reach the coral level we define as the "goal"
+  public Distance getDesiredDistance() {
+    // TODO: verify units & conversions
+    return Units.Meters.of(mElevatorPidController.getGoal().position);
+  }
+
+  // setting the goal state (in our case, the meters to the desired coral level)
+  public void setDesiredDistance(Distance pDistance) {
+    mElevatorPidController.setGoal(pDistance.in(Units.Meters));
+  }
+
+  // tells us if we're at the goal state (desired coral level)
+  public boolean atDesiredDistance() {
+    return mElevatorPidController.atGoal();
+  }
+
+  // initializes Elevator Pid controller & resets it to the position it's currently at w.r.t the elevator
+  public void usePidController() {
+    mElevatorPidControllerEnabled = true;
+    mElevatorPidController.reset(getEncoderPositionMeters());
+  }
+
+  // disabled Pid for elevator and sets motor speed to 0
+  public void disablePidController() {
+    mElevatorPidControllerEnabled = false;
+    mElevatorMotorSpeed = 0.0;
+  }
+
+  // resets the rate limiting factor for the elevator
+  public void resetRateLimiter() {
+    mElevatorRateLimiter.reset(0);
+  }
+  /* END ENCODER FUNCTIONS */
+
+
+  /* MOTOR IDENTIFICATION TEST ROUTINES */
+  // In this test, the elevator is gradually sped-up such that the voltage corresponding to acceleration is negligible (hence, “as if static”)
+  public Command sysidQuasistatic(SysIdRoutine.Direction pDirection) {
+    if (pDirection == SysIdRoutine.Direction.kForward) {
+      return mElevatorSysIdRoutine.quasistatic(pDirection).until(() -> atTop());
+    }
+    else {
+      return mElevatorSysIdRoutine.quasistatic(pDirection).until(() -> atBottom());
+    }
+  }
+
+  // In this test, a constant ‘step voltage’ is given to the mechanism, so that the behavior while accelerating can be determined.
+  public Command sysidDyamic(SysIdRoutine.Direction pDirection) {
+    if (pDirection == SysIdRoutine.Direction.kForward) {
+      return mElevatorSysIdRoutine.dynamic(pDirection).until(() -> atTop());
+    }
+    else {
+      return mElevatorSysIdRoutine.dynamic(pDirection).until(() -> atBottom());
+    }
+  }
+
+  // logs data from sysid test routines
+  private void handleSysIdLog(SysIdRoutineLog pLog) {
+    var rightElevatorMotorVolts = 
+      Units.Volts.of(mRightElevatorMotor.getAppliedOutput() * mRightElevatorMotor.getBusVoltage());
+    pLog.motor("Elevator")
+      .voltage(rightElevatorMotorVolts.negate())
+      .linearPosition(getElevatorPosition())
+      .linearVelocity(getElevatorVelocity());
+  }
+  /* END MOTOR IDENTIFICATION TEST ROUTINES */
+
+
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run -> the "main" method for the elevator
+    if (mElevatorPidControllerEnabled) {
+      var setpoint = mElevatorPidController.getSetpoint();
+      var pidOutput = mElevatorPidController.calculate(getEncoderPositionMeters());
+      var feedforward = mElevatorFeedforward.calculate(
+        getElevatorPosition().in(Units.Meters), getElevatorVelocity().in(Units.MetersPerSecond)
+      );
+
+      SmartDashboard.putNumber("Elevator: Raw Setpoint - Position", setpoint.position);
+      SmartDashboard.putNumber("Elevator: Raw Setpoint - Velocity", setpoint.velocity);
+      SmartDashboard.putNumber("Elevator: Raw PID Output", pidOutput);
+      SmartDashboard.putNumber("Elevator: Raw FeedForward", feedforward);
+
+      setElevatorMotorValues(pidOutput);
+    }
+    else {
+      setElevatorMotorValues(mElevatorMotorSpeed * 12.0); // TODO: tweak
+    }
+  }
+
+
+
+
 
   
   /**
@@ -112,11 +316,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   public boolean exampleCondition() {
     // Query some boolean state, such as a digital sensor.
     return false;
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
   }
 
   @Override

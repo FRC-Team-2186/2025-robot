@@ -24,6 +24,7 @@ public final class Constants {
 
   // Elevator Encoder Constants
   public static final int ELEVATOR_ABSOLUTE_ENCODER_OFFSET = -1; // TODO: FILL OUT!!!
+  public static final double ELEVATOR_MAX_SAFE_POSITION_METERS = -1;
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
