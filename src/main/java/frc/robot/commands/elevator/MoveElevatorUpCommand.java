@@ -1,5 +1,34 @@
 package frc.robot.commands.elevator;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.ElevatorSubsystem;
 
-public class MoveElevatorUpCommand {
+public class MoveElevatorUpCommand extends Command{
 
+    private final ElevatorSubsystem mElevatorSubsystem;
+
+    public MoveElevatorUpCommand(ElevatorSubsystem mElevatorSubsystem){
+        this.mElevatorSubsystem = mElevatorSubsystem;
+        addRequirements(mElevatorSubsystem);
+    }
+
+    @Override
+    public void initialize() {
+        mElevatorSubsystem.disablePidController();
+    }
+
+    @Override
+    public void execute() {
+        mElevatorSubsystem.setElevatorMotorValues(0.5);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        mElevatorSubsystem.disablePidController();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return mElevatorSubsystem.atTop();
+    }
 }
+
