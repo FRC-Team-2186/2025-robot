@@ -19,6 +19,33 @@ import com.pathplanner.lib.config.PIDConstants;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  // Elevator Motor Constants
+  public static final int LEFT_ELEVATOR_MOTOR_CAN_ID = -1; // TODO: FILL OUT!!!
+  public static final int RIGHT_ELEVATOR_MOTOR_CAN_ID = -1; // TODO: FILL OUT!!!
+
+  // Elevator Limit Switch Constants
+  public static final int TOP_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = -1; // TODO: FILL OUT!!!
+  public static final int BOTTOM_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = -1; // TODO: FILL OUT!!!
+
+  // Elevator Encoder Constants
+  public static final int ELEVATOR_ABSOLUTE_ENCODER_OFFSET = -1; // TODO: FILL OUT!!!
+  public static final double ELEVATOR_MAX_SAFE_POSITION_METERS = -1; // TODO: FILL OUT!!!
+
+  // Coral Reef Level Constants
+  public static final double L1_TROUGH_METERS = 0.46; // TODO: ROUGH ESTIMATE - CONFIRM !!!
+  public static final double L2_CORAL_METERS = 0.81; // TODO: ROUGH ESTIMATE - CONFIRM !!!
+  public static final double L3_CORAL_METERS = 1.21; // TODO: ROUGH ESTIMATE - CONFIRM !!!
+  public static final double L4_CORAL_METERS = 1.83; // TODO: ROUGH ESTIMATE - CONFIRM !!!
+
+  // ELEVATOR CONSTANTS
+  public static final double ELEVATOR_RESTING_POSITION_METERS = 0; // TODO: FILL OUT!!!
+
+  public static class OperatorConstants {
+    public static final int kDriverControllerPort = 0;
+  }
+
+  // Path Planner PID constants
   public static final PIDConstants PATH_FOLLOWING_PID_CONSTANTS_POSITIONAL = new PIDConstants(5.1275, 0.755);
   public static final PIDConstants PATH_FOLLOWING_PID_CONSTANTS_ROTATIONAL = new PIDConstants(1.985);
 }
