@@ -179,7 +179,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
           Constants.PATH_FOLLOWING_PID_CONSTANTS_ROTATIONAL);
 
       AutoBuilder.configure(mSwerveDrive::getPose, mSwerveDrive::resetOdometry, this::getRobotVelocity,
-          this::consumePathPlannerOutput, pathFollower,
+              (speedsRobotRelative, moduleFeedForwards) -> {
+            if (PATHPLANNER_ENABLE_FEEDFORWARD)
+            consumePathPlannerOutput(speedsRobotRelative, moduleFeedForwards);
+          }, pathFollower,
           robotCfg, this::shouldFlip, this);
     } catch (Exception err) {
       throw new RuntimeException(err);
