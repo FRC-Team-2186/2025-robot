@@ -8,8 +8,9 @@ import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
-
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
@@ -24,8 +25,9 @@ public class Intake extends SubsystemBase {
 
   SparkAbsoluteEncoder coralArmEncoder;
   
-
+  //Arm Pid
   private final ArmFeedforward feedforward;
+  private final ProfiledPIDController armPIDController;
 
 
 
@@ -41,7 +43,8 @@ public class Intake extends SubsystemBase {
     coralArmEncoder = mCoralArmMotor.getAbsoluteEncoder();
 
     feedforward = new ArmFeedforward(0.0, 0.577, 0.0);
-
+    armPIDController = new ProfiledPIDController(.55, 0, 0, null);
+    armPIDController.setGoal(0);
      
 
     
@@ -70,11 +73,28 @@ public class Intake extends SubsystemBase {
 
 
   //Coral Arm
+    public double getMeasurement() {
+    return coralArmEncoder.getPosition() * 360;
+  }
 
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+
+    //PID Algorithm
+    double position = getMeasurement();
+    double velocity = armPIDController.getSetpoint().velocity;
+   
+    double armPIDControllerOutput = armPIDController.calculate(10);
+    
+     double feedforwardOutput = feedforward.calculate(position, velocity);
+    double output = armPIDControllerOutput + feedforwardOutput;
+
+    output = MathUtil.clamp(output, -0.05, 0.05);
+
+    mCoralArmMotor.set(output);
   }
 
 
