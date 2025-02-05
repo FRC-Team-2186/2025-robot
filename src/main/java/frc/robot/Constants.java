@@ -21,8 +21,8 @@ import com.pathplanner.lib.config.PIDConstants;
 public final class Constants {
 
   // Elevator Motor Constants
-  public static final int LEFT_ELEVATOR_MOTOR_CAN_ID = -1; // TODO: FILL OUT!!!
-  public static final int RIGHT_ELEVATOR_MOTOR_CAN_ID = -1; // TODO: FILL OUT!!!
+  public static final int LEFT_ELEVATOR_MOTOR_CAN_ID = 22; // TODO: FILL OUT!!!
+  public static final int RIGHT_ELEVATOR_MOTOR_CAN_ID = 29; // TODO: FILL OUT!!!
 
   // Elevator Limit Switch Constants
   public static final int TOP_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = -1; // TODO: FILL OUT!!!

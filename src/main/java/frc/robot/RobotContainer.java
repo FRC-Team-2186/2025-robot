@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import swervelib.SwerveInputStream;
 
@@ -35,6 +36,17 @@ public class RobotContainer {
 
   private final SendableChooser<Command> mCommandChooser;
 
+  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(mDrivetrainSubsystem.getSwerveDrive(),
+                                                                () -> mDriverController.getLeftY() * -1,
+                                                                () -> mDriverController.getLeftX() * -1)
+                                                            .withControllerRotationAxis(mDriverController::getRightX)
+                                                            .deadband(0.8)
+                                                            .scaleTranslation(0.8)
+                                                            .allianceRelativeControl(true);
+
+  SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(true)
+                                                             .allianceRelativeControl(false);
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -47,14 +59,16 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    var teleopDriveWithAngularVelocity = SwerveInputStream.of(mDrivetrainSubsystem.getSwerveDrive(),
-        negate(mDriverController::getLeftX), negate(mDriverController::getLeftY))
-        .withControllerRotationAxis(mDriverController::getRightX)
-        .deadband(0.1)
-        .scaleRotation(0.8)
-        .allianceRelativeControl(true);
 
-    mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(teleopDriveWithAngularVelocity));
+    // var teleopDriveWithAngularVelocity = SwerveInputStream.of(mDrivetrainSubsystem.getSwerveDrive(),
+    //     () -> mDriverController.getLeftX() * -1,
+    //     () -> mDriverController.getLeftY() * -1)
+    //     .withControllerRotationAxis(mDriverController::getRightX)
+    //     .deadband(0.5)
+    //     .scaleRotation(0.8)
+    //     .robotRelative(true);
+
+    mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(driveRobotOriented));
   }
 
   /**
