@@ -11,16 +11,22 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Example Path"
+                  "pathName": "Middle Starting Position to East Reef (Left)"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "coral_l4"
+                  "name": "elevator_to_l4"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "drop_coral"
           }
         }
       ]

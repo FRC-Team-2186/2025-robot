@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.2366955773305086,
+        "y": 7.013664840439618
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.8616843313809475,
+        "y": 6.667006909339882
+      },
+      "isLocked": false,
+      "linkedName": "Left Loading Station"
+    },
+    {
+      "anchor": {
+        "x": 3.3189473814883472,
+        "y": 5.3003786248675855
+      },
+      "prevControl": {
+        "x": 2.0802184024069685,
+        "y": 6.03003095206511
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Northwest Reef (Right)"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -59.99999999999999
+  },
+  "reversed": false,
+  "folder": "Left",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 127.689655547749
+  },
+  "useDefaultConstraints": true
+}
