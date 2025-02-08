@@ -25,12 +25,12 @@ public final class Constants {
   public static final int RIGHT_ELEVATOR_MOTOR_CAN_ID = 22; // TODO: FILL OUT!!!
 
   // Elevator Limit Switch Constants
-  public static final int TOP_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = -1; // TODO: FILL OUT!!!
-  public static final int BOTTOM_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = -1; // TODO: FILL OUT!!!
+  public static final int TOP_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = 0; // TODO: FILL OUT!!!
+  public static final int BOTTOM_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = 0; // TODO: FILL OUT!!!
 
   // Elevator Encoder Constants
-  public static final int ELEVATOR_ABSOLUTE_ENCODER_OFFSET = -1; // TODO: FILL OUT!!!
-  public static final double ELEVATOR_MAX_SAFE_POSITION_METERS = -1; // TODO: FILL OUT!!!
+  public static final int ELEVATOR_ABSOLUTE_ENCODER_OFFSET = 0; // TODO: FILL OUT!!!
+  public static final double ELEVATOR_MAX_SAFE_POSITION_METERS = 0; // TODO: FILL OUT!!!
 
   // Coral Reef Level Constants
   // where we want the bottom of coral payload to be at each reef level

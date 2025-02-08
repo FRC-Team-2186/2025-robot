@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -33,8 +34,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   /** SETTING UP CLASS VARIABLES */
 
   // Elevator Motors
-  private final SparkFlex mLeftElevatorMotor; // the "master"
-  private final SparkFlex mRightElevatorMotor;
+  private final SparkMax mLeftElevatorMotor; // the "master"
+  private final SparkMax mRightElevatorMotor;
 
   // Elevator FeedForward obj
   private final ElevatorFeedforward mElevatorFeedforward = new ElevatorFeedforward(0, 0, 0); // TODO: figure out what these constants should be
@@ -42,10 +43,10 @@ public class ElevatorSubsystem extends SubsystemBase {
   /** Limit Switches for top & bottom of elevator
    * args = DIO channel for digital input
   */
-  private final DigitalInput mElevatorLimitSwitchBottom = 
-    new DigitalInput(Constants.BOTTOM_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL);
-  private final DigitalInput mElevatorLimitSwitchTop = 
-    new DigitalInput(Constants.TOP_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL);
+  // private final DigitalInput mElevatorLimitSwitchBottom = 
+  //   new DigitalInput(Constants.BOTTOM_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL);
+  // private final DigitalInput mElevatorLimitSwitchTop = 
+  //   new DigitalInput(Constants.TOP_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL);
 
   /** TODO: decide whether we want the encoder to be set as relative or absolute & declare it here. 
    * declaring absolute for now
@@ -83,8 +84,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     // These are both NEO Vortex motors
     // args = CAN ID of motor & MotorType
-    mLeftElevatorMotor = new SparkFlex(Constants.LEFT_ELEVATOR_MOTOR_CAN_ID, MotorType.kBrushless);
-    mRightElevatorMotor = new SparkFlex(Constants.RIGHT_ELEVATOR_MOTOR_CAN_ID, MotorType.kBrushless);
+    mLeftElevatorMotor = new SparkMax(Constants.LEFT_ELEVATOR_MOTOR_CAN_ID, MotorType.kBrushless);
+    mRightElevatorMotor = new SparkMax(Constants.RIGHT_ELEVATOR_MOTOR_CAN_ID, MotorType.kBrushless);
 
     // The left elevator motor has the encoder attached
     mElevatorEncoder = mLeftElevatorMotor.getAbsoluteEncoder();
@@ -138,8 +139,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     tab.addBoolean("Is the Elevator in a safe position", () -> isElevatorSafe());
     tab.addBoolean("At Bottom", this::atBottom);
     tab.addBoolean("At Top", this::atTop);
-    tab.add("Top Limit Switch", mElevatorLimitSwitchTop);
-    tab.add("Bottom Limit Switch", mElevatorLimitSwitchBottom);
+    // tab.add("Top Limit Switch", mElevatorLimitSwitchTop);
+    // tab.add("Bottom Limit Switch", mElevatorLimitSwitchBottom);
     tab.add("PID Controller", mElevatorPidController);
     }
 
@@ -171,8 +172,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Elevator: Raw Voltage", pMotorSpeed);
 
-    mLeftElevatorMotor.setVoltage(pMotorSpeed);
-    mRightElevatorMotor.setVoltage(-pMotorSpeed);
+    mLeftElevatorMotor.set(pMotorSpeed);
+    mRightElevatorMotor.set(-pMotorSpeed);
   }
   /* END MOTOR FUNCTIONS */
 
@@ -182,13 +183,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   // tells us if the elevator is in it's resting position based on the bottom limit switch
   public boolean atBottom() {
-    return !mElevatorLimitSwitchBottom.get();
+    // return !mElevatorLimitSwitchBottom.get();
+    return false;
     // potential TODO: Ideally also determine this programatically
   }
 
   // tells us if the elevator is at its max height based on the top limit switch
   public boolean atTop() {
-    return mElevatorLimitSwitchTop.get();
+    // return mElevatorLimitSwitchTop.get();
+    return false;
     // potential TODO: Ideally also determine this programatically
   }
 

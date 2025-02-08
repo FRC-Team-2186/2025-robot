@@ -36,22 +36,22 @@ public class RobotContainer {
   @NotLogged
   private final CommandXboxController mDriverController = new CommandXboxController(0);
 
-  // private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
+  private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
 
   private final SendableChooser<Command> mCommandChooser;
 
   private final ElevatorSubsystem  mElevatorSubsystem = new ElevatorSubsystem();
 
-  // SwerveInputStream driveAngularVelocity = SwerveInputStream.of(mDrivetrainSubsystem.getSwerveDrive(),
-  //                                                               () -> mDriverController.getLeftY() * -1,
-  //                                                               () -> mDriverController.getLeftX() * -1)
-  //                                                           .withControllerRotationAxis(mDriverController::getRightX)
-  //                                                           .deadband(0.8)
-  //                                                           .scaleTranslation(0.8)
-  //                                                           .allianceRelativeControl(true);
+  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(mDrivetrainSubsystem.getSwerveDrive(),
+                                                                () -> mDriverController.getLeftY() * -1,
+                                                                () -> mDriverController.getLeftX() * -1)
+                                                            .withControllerRotationAxis(mDriverController::getRightX)
+                                                            .deadband(0.8)
+                                                            .scaleTranslation(0.8)
+                                                            .allianceRelativeControl(true);
 
-  // SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(true)
-  //                                                            .allianceRelativeControl(false);
+  SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(true)
+                                                             .allianceRelativeControl(false);
                                                             
 
   /**
@@ -75,7 +75,7 @@ public class RobotContainer {
     //     .scaleRotation(0.8)
     //     .robotRelative(true);
 
-    // mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(driveRobotOriented));
+    mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(driveRobotOriented));
 
     mDriverController.y().whileTrue(new MoveElevatorUpCommand(mElevatorSubsystem));
     mDriverController.a().whileTrue(new MoveElevatorDownCommand(mElevatorSubsystem));
