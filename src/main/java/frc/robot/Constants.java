@@ -41,6 +41,9 @@ public final class Constants {
   // ELEVATOR CONSTANTS
   public static final double ELEVATOR_RESTING_POSITION_METERS = 0; // TODO: FILL OUT!!!
 
+  // CLIMBER CONSTANTS
+  public static final int CLIMBER_RELAY_PORT_ID = 0;
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
