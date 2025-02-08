@@ -18,7 +18,7 @@ public class MoveElevatorDownCommand extends Command{
 
     @Override
     public void execute() {
-        mElevatorSubsystem.setElevatorMotorValues(-0.5);
+        mElevatorSubsystem.setElevatorMotorValues(-0.1);
     }
 
     @Override

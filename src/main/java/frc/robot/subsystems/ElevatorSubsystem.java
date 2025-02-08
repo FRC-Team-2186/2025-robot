@@ -33,7 +33,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   /** SETTING UP CLASS VARIABLES */
 
   // Elevator Motors
-  private final SparkFlex mLeftElevatorMotor;
+  private final SparkFlex mLeftElevatorMotor; // the "master"
   private final SparkFlex mRightElevatorMotor;
 
   // Elevator FeedForward obj
@@ -86,8 +86,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     mLeftElevatorMotor = new SparkFlex(Constants.LEFT_ELEVATOR_MOTOR_CAN_ID, MotorType.kBrushless);
     mRightElevatorMotor = new SparkFlex(Constants.RIGHT_ELEVATOR_MOTOR_CAN_ID, MotorType.kBrushless);
 
-    // TODO: define l or r motor to be attached to encoder - using right for now
-    mElevatorEncoder = mRightElevatorMotor.getAbsoluteEncoder();
+    // The left elevator motor has the encoder attached
+    mElevatorEncoder = mLeftElevatorMotor.getAbsoluteEncoder();
 
     // configuring the motor controllers
     // arg = how often we want the position to be measured
@@ -116,7 +116,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 
     /** initializing PID controller 
-     * args: proportional coefficient, integral coefficiet, derivative coefficient, and constraints for velocity & acceleration
+     * args: proportional coefficient, integral coefficient, derivative coefficient, and constraints for velocity & acceleration
      * TODO: fill out Pid values!!! */
     mElevatorPidController = 
       new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0, 0));
@@ -171,8 +171,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Elevator: Raw Voltage", pMotorSpeed);
 
-    mRightElevatorMotor.setVoltage(-pMotorSpeed);
     mLeftElevatorMotor.setVoltage(pMotorSpeed);
+    mRightElevatorMotor.setVoltage(-pMotorSpeed);
   }
   /* END MOTOR FUNCTIONS */
 
@@ -180,14 +180,16 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   /* ENCODER FUNCTIONS */
 
-  // tells us if the elevator is in it's resting position bsed on the bottom limit switch
+  // tells us if the elevator is in it's resting position based on the bottom limit switch
   public boolean atBottom() {
     return !mElevatorLimitSwitchBottom.get();
+    // potential TODO: Ideally also determine this programatically
   }
 
   // tells us if the elevator is at its max height based on the top limit switch
   public boolean atTop() {
     return mElevatorLimitSwitchTop.get();
+    // potential TODO: Ideally also determine this programatically
   }
 
   // gets position of encoder/elevator in meters -> returned as a Distance obj
@@ -307,7 +309,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       setElevatorMotorValues(pidOutput);
     }
     else {
-      setElevatorMotorValues(mElevatorMotorSpeed * 12.0); // TODO: tweak
+      setElevatorMotorValues(mElevatorMotorSpeed); // TODO: tweak, speed * a constant
     }
   }
 
