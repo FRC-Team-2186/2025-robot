@@ -59,7 +59,6 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
 
-    mClimberSubsystem.setDefaultCommand(mClimberSubsystem.stopCommand());
   }
 
   private void configureBindings() {
@@ -71,7 +70,7 @@ public class RobotContainer {
     //     .deadband(0.5)
     //     .scaleRotation(0.8)
     //     .robotRelative(true);
-
+    mClimberSubsystem.setDefaultCommand(mClimberSubsystem.stopCommand());
     mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(driveRobotOriented));
   }
 
