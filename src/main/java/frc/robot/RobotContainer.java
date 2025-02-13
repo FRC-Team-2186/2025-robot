@@ -77,8 +77,9 @@ public class RobotContainer {
 
     mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(driveRobotOriented));
 
-    mDriverController.y().whileTrue(new MoveElevatorUpCommand(mElevatorSubsystem));
-    mDriverController.a().whileTrue(new MoveElevatorDownCommand(mElevatorSubsystem));
+    mElevatorSubsystem.setDefaultCommand(mElevatorSubsystem.moveElevatorDirectCommand(() -> 0.0));
+    mDriverController.y().whileTrue(mElevatorSubsystem.moveElevatorDirectCommand(() -> 0.25));
+    mDriverController.a().whileTrue(mElevatorSubsystem.moveElevatorDirectCommand(() -> -0.25));
   }
 
   /**
