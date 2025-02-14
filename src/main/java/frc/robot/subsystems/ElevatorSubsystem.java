@@ -170,7 +170,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       pMotorSpeed = 0.0;
     }
 
-    SmartDashboard.putNumber("Elevator: Raw Voltage", pMotorSpeed);
+    SmartDashboard.putNumber("Elevator: Motor Speed", pMotorSpeed);
 
     mLeftElevatorMotor.set(pMotorSpeed);
     mRightElevatorMotor.set(-pMotorSpeed);
