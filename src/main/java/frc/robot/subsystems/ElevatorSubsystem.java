@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
@@ -88,7 +90,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     mRightElevatorMotor = new SparkMax(Constants.RIGHT_ELEVATOR_MOTOR_CAN_ID, MotorType.kBrushless);
 
     // The left elevator motor has the encoder attached
-    mElevatorEncoder = mLeftElevatorMotor.getAbsoluteEncoder();
+    mElevatorEncoder = mRightElevatorMotor.getAbsoluteEncoder();
 
     // configuring the motor controllers
     // arg = how often we want the position to be measured
@@ -162,7 +164,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     mRightElevatorMotor.set(0);
   }
 
-  public void setElevatorMotorValues(double pMotorSpeed){
+  public Command moveElevatorDirectCommand(DoubleSupplier pSource) {
+    return run(() -> {
+      setElevatorMotorSpeed(pSource.getAsDouble());
+    });
+  }
+
+  private void setElevatorMotorValues(double pMotorSpeed){
     if (pMotorSpeed > 0.0 && atTop()) {
       pMotorSpeed = 0.0;
     }
