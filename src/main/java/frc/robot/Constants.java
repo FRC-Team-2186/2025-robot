@@ -46,6 +46,18 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
+  // CORAL ARM SUBSYSTEM CONSTANTS
+  public static final int CORAL_ARM_MOTOR_CAN_ID = 0; // TODO: FILL OUT!!!
+  public static final double CORAL_ARM_ABSOLUTE_ENCODER_OFFSET = 0; // TODO: FILL OUT!!!
+
+  // CORAL INTAKE SUBSYSTEM CONSTANTS
+  public static final int CORAL_INTAKE_MOTOR_CAN_ID = 0; // TODO: FILL OUT!!!
+  // beam break sensor
+  public static final int CORAL_BEAM_BREAK_DIO_CHANNEL = 0; // TODO: FILL OUT!!!
+  // auto Coral Intake/Outtake Speeds
+  public static final double CORAL_INTAKE_SPEED = 0.0;
+  public static final double CORAL_OUTTAKE_SPEED = 0.0;
+
   // Path Planner PID constants
   public static final PIDConstants PATH_FOLLOWING_PID_CONSTANTS_POSITIONAL = new PIDConstants(5.1275, 0.755);
   public static final PIDConstants PATH_FOLLOWING_PID_CONSTANTS_ROTATIONAL = new PIDConstants(1.985);
