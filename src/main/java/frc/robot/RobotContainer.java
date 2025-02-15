@@ -7,12 +7,12 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 import swervelib.SwerveInputStream;
 
 import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -35,6 +35,7 @@ public class RobotContainer {
 
   private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
   private final ClimberSubsystem mClimberSubsystem = new ClimberSubsystem();
+  private final ElevatorSubsystem mElevatorSubsystem = new ElevatorSubsystem();
 
   private final SendableChooser<Command> mCommandChooser;
 
@@ -66,13 +67,17 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    // var teleopDriveWithAngularVelocity = SwerveInputStream.of(mDrivetrainSubsystem.getSwerveDrive(),
-    //     () -> mDriverController.getLeftX() * -1,
-    //     () -> mDriverController.getLeftY() * -1)
-    //     .withControllerRotationAxis(mDriverController::getRightX)
-    //     .deadband(0.5)
-    //     .scaleRotation(0.8)
-    //     .robotRelative(true);
+    // var teleopDriveWithAngularVelocity =
+    // SwerveInputStream.of(mDrivetrainSubsystem.getSwerveDrive(),
+    // () -> mDriverController.getLeftX() * -1,
+    // () -> mDriverController.getLeftY() * -1)
+    // .withControllerRotationAxis(mDriverController::getRightX)
+    // .deadband(0.5)
+    // .scaleRotation(0.8)
+    // .robotRelative(true);
+
+    mDriverController.y().whileTrue(mElevatorSubsystem.directCommand(() -> 0.25));
+    mDriverController.a().whileTrue(mElevatorSubsystem.directCommand(() -> -0.25));
   }
 
   /**
@@ -87,4 +92,7 @@ public class RobotContainer {
   private DoubleSupplier negate(DoubleSupplier pSupplier) {
     return () -> pSupplier.getAsDouble() * -1;
   }
+
 }
+
+  
