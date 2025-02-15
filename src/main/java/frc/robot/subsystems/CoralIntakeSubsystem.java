@@ -62,6 +62,7 @@ public class CoralIntakeSubsystem extends SubsystemBase {
 
     public void setCoralIntakeValue(double pMotorSpeed) {
         SmartDashboard.putNumber("Coral Intake: Motor Speed", pMotorSpeed);
+        mCoralIntakeMotorSpeed = pMotorSpeed;
         mCoralIntakeMotor.set(pMotorSpeed);
     }
 
