@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -30,7 +31,7 @@ public class CoralArmSubsystem extends SubsystemBase {
     private final ArmFeedforward mCoralArmFeedforward;
 
     // Coral arm encoder
-    private SparkAbsoluteEncoder mCoralEncoder;
+    private RelativeEncoder mCoralEncoder;
 
     // pid for coral arm
     private final ProfiledPIDController mCoralPidController;
@@ -59,6 +60,7 @@ public class CoralArmSubsystem extends SubsystemBase {
 
         // arm motor is a Neo 550
         mCoralArmMotor = new SparkMax(Constants.CORAL_ARM_MOTOR_CAN_ID, MotorType.kBrushless);
+        mCoralEncoder = mCoralArmMotor.getEncoder();
 
         // configuring the motor controller
         // arg = how often we want the position to be measured
@@ -115,7 +117,7 @@ public class CoralArmSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("Elevator: Motor Speed", pMotorSpeed);
 
-        mLeftElevatorMotor.set(pMotorSpeed);
+        mCoralArmMotor.set(pMotorSpeed);
     }
   /* END MOTOR FUNCTIONS */
 
