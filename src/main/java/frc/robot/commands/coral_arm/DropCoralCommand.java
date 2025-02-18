@@ -16,6 +16,7 @@ public class DropCoralCommand extends Command {
 
     @Override
     public void initialize() {
+        mCoralArmSubsystem.usePidController();
     }
 
     @Override

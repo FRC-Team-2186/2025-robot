@@ -13,6 +13,7 @@ public class CollectCoralCommand extends Command{
 
     @Override
     public void initialize() {
+        mCoralArmSubsystem.usePidController();
     }
 
     @Override
