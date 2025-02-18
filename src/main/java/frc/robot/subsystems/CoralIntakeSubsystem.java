@@ -62,7 +62,6 @@ public class CoralIntakeSubsystem extends SubsystemBase {
 
     public void setCoralIntakeValue(double pMotorSpeed) {
         SmartDashboard.putNumber("Coral Intake: Motor Speed", pMotorSpeed);
-        mCoralIntakeMotorSpeed = pMotorSpeed;
         mCoralIntakeMotor.set(pMotorSpeed);
     }
 
@@ -81,6 +80,10 @@ public class CoralIntakeSubsystem extends SubsystemBase {
         });
     }
 
-    
+    @Override
+    public void periodic() {
+        // This method will be called once per scheduler run -> the "main" method for the coral intake
+        setCoralIntakeValue(mCoralIntakeMotorSpeed);
+    }
     
 }

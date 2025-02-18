@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
@@ -14,13 +13,9 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -198,13 +193,13 @@ public class CoralArmSubsystem extends SubsystemBase {
 
     public Angle getDesiredAngle() {
         return Units.Degrees.of(mCoralPidController.getGoal().position);
-      }
+    }
     
-      public void setDesiredAngle(Angle pAngle) {
+    public void setDesiredAngle(Angle pAngle) {
         mCoralPidController.setGoal(pAngle.in(Units.Degrees));
-      }
+    }
     
-      public boolean atDesiredAngle() {
+    public boolean atDesiredAngle() {
         return mCoralPidController.atGoal();
     }
 
@@ -213,18 +208,18 @@ public class CoralArmSubsystem extends SubsystemBase {
         mCoralPidController.reset(getEncoderPositionDegrees());
       }
     
-      public void disablePidController() {
+    public void disablePidController() {
         mCoralPidControllerEnabled = false;
         setCoralMotorValue(0.0);
-      }
+    }
 
     /* END ENCODER FUNCTIONS */
 
     public Command sysidQuasistatic(SysIdRoutine.Direction pDirection) {
         if (pDirection == SysIdRoutine.Direction.kForward) {
-        return mCoralArmSysIdRoutine.quasistatic(pDirection).until(() -> atTop());
+            return mCoralArmSysIdRoutine.quasistatic(pDirection).until(() -> atTop());
         } else {
-        return mCoralArmSysIdRoutine.quasistatic(pDirection).until(() -> atBottom());
+            return mCoralArmSysIdRoutine.quasistatic(pDirection).until(() -> atBottom());
         }
     }
 

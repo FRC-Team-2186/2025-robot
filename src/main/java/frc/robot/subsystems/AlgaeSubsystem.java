@@ -55,9 +55,8 @@ public class AlgaeSubsystem extends SubsystemBase {
     }
 
     // actually sets the motor speed
-    public void setAlgaeMotorsValue(double pMotorSpeed) {
+    public void setAlgaeMotorValues(double pMotorSpeed) {
         SmartDashboard.putNumber("Algae Intake: Motor Speed", pMotorSpeed);
-        mAlgaeMotorSpeed = pMotorSpeed;
         mAlgaeLeftMotor.set(pMotorSpeed);
         mAlgaeRightMotor.set(-pMotorSpeed);
     }
@@ -68,5 +67,11 @@ public class AlgaeSubsystem extends SubsystemBase {
         return run(() -> {
             setAlgaeMotorSpeed(pSource.getAsDouble());
         });
+    }
+
+    @Override
+    public void periodic() {
+        // This method will be called once per scheduler run -> the "main" method for the coral intake
+        setAlgaeMotorValues(mAlgaeMotorSpeed);
     }
 }
