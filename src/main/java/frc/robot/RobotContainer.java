@@ -5,12 +5,9 @@
 package frc.robot;
 
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import swervelib.SwerveInputStream;
-
-import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.epilogue.Logged;
@@ -33,12 +30,9 @@ public class RobotContainer {
   @NotLogged
   private final CommandXboxController mDriverController = new CommandXboxController(0);
 
-  private final SendableChooser<Command> mCommandChooser;
-
-  private final ElevatorSubsystem mElevatorSubsystem = new ElevatorSubsystem();
-
   private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
   private final ClimberSubsystem mClimberSubsystem = new ClimberSubsystem();
+  private final ElevatorSubsystem mElevatorSubsystem = new ElevatorSubsystem();
 
   private final SendableChooser<Command> mCommandChooser;
 
@@ -92,9 +86,5 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return mCommandChooser.getSelected();
-  }
-
-  private DoubleSupplier negate(DoubleSupplier pSupplier) {
-    return () -> pSupplier.getAsDouble() * -1;
   }
 }
