@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 1.2366955773305086,
+        "y": 7.013664840439618
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8662753350306884,
-        "y": 6.456258893186284
+        "x": 1.9198224150552172,
+        "y": 6.0462724139084285
       },
       "isLocked": false,
-      "linkedName": "Left Starting Pos"
+      "linkedName": "Left Loading Station"
     },
     {
       "anchor": {
-        "x": 3.63331732993805,
-        "y": 5.4623146306453485
+        "x": 3.6167895030377473,
+        "y": 5.448604921141823
       },
       "prevControl": {
-        "x": 3.4168643331465,
-        "y": 5.587406997238827
+        "x": 1.407508523529731,
+        "y": 5.890073426558637
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Northwest Reef (Left)"
     }
   ],
   "rotationTargets": [],
@@ -45,10 +45,10 @@
     "rotation": -59.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 127.689655547749
   },
   "useDefaultConstraints": true
 }

@@ -5,6 +5,11 @@
 package frc.robot;
 
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.DrivetrainSubsystem;
+import swervelib.SwerveInputStream;
+
 import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -28,25 +33,25 @@ public class RobotContainer {
   @NotLogged
   private final CommandXboxController mDriverController = new CommandXboxController(0);
 
-  // private final DrivetrainSubsystem mDrivetrainSubsystem = new
-  // DrivetrainSubsystem();
-
   private final SendableChooser<Command> mCommandChooser;
 
   private final ElevatorSubsystem mElevatorSubsystem = new ElevatorSubsystem();
 
-  // SwerveInputStream driveAngularVelocity =
-  // SwerveInputStream.of(mDrivetrainSubsystem.getSwerveDrive(),
-  // () -> mDriverController.getLeftY() * -1,
-  // () -> mDriverController.getLeftX() * -1)
-  // .withControllerRotationAxis(mDriverController::getRightX)
-  // .deadband(0.8)
-  // .scaleTranslation(0.8)
-  // .allianceRelativeControl(true);
+  private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
+  private final ClimberSubsystem mClimberSubsystem = new ClimberSubsystem();
 
-  // SwerveInputStream driveRobotOriented =
-  // driveAngularVelocity.copy().robotRelative(true)
-  // .allianceRelativeControl(false);
+  private final SendableChooser<Command> mCommandChooser;
+
+  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(mDrivetrainSubsystem.getSwerveDrive(),
+      () -> mDriverController.getLeftY() * -1,
+      () -> mDriverController.getLeftX() * -1)
+      .withControllerRotationAxis(mDriverController::getRightX)
+      .deadband(0.8)
+      .scaleTranslation(0.8)
+      .allianceRelativeControl(true);
+
+  SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(true)
+      .allianceRelativeControl(false);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -57,6 +62,10 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
+
+    mClimberSubsystem.setDefaultCommand(mClimberSubsystem.stopCommand());
+    mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(driveRobotOriented));
+
   }
 
   private void configureBindings() {

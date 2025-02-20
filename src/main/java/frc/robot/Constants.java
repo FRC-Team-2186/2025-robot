@@ -49,6 +49,9 @@ public final class Constants {
   public static final double ELEVATOR_MAX_VELOCITY_METERS_PER_SECOND = 0.75;
   public static final double ELEVATOR_MAX_ACCELERATION = 0.25;
 
+  // CLIMBER CONSTANTS
+  public static final int CLIMBER_RELAY_PORT_ID = 0;
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
