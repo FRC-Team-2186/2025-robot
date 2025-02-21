@@ -30,17 +30,17 @@ public final class Constants {
 
   // Elevator Encoder Constants
   public static final int ELEVATOR_ABSOLUTE_ENCODER_OFFSET = 0; // TODO: FILL OUT!!!
-  public static final double ELEVATOR_MAX_SAFE_POSITION_METERS = 0; // TODO: FILL OUT!!!
+  public static final double ELEVATOR_MAX_SAFE_POSITION_INCHES = 0; // TODO: FILL OUT!!!
 
   // Coral Reef Level Constants
   // where we want the bottom of coral payload to be at each reef level
-  public static final double L2_CORAL_METERS = 0.81; // TODO: ROUGH ESTIMATE - CONFIRM !!!
-  public static final double L3_CORAL_METERS = 1.21; // TODO: ROUGH ESTIMATE - CONFIRM !!!
-  public static final double L4_CORAL_METERS = 1.83; // TODO: ROUGH ESTIMATE - CONFIRM !!!
+  public static final double L2_CORAL_INCHES = 21.0; // TODO: ROUGH ESTIMATE - CONFIRM !!!
+  public static final double L3_CORAL_INCHES = 36.0; // TODO: ROUGH ESTIMATE - CONFIRM !!!
+  public static final double L4_CORAL_INCHES = 48.0; // TODO: ROUGH ESTIMATE - CONFIRM !!!
 
   // ELEVATOR CONSTANTS
   // this is measured from bottom of coral payload to ground
-  public static final double ELEVATOR_RESTING_POSITION_METERS = 0; // TODO: FILL OUT!!!
+  public static final double ELEVATOR_RESTING_POSITION_INCHES = 0; // TODO: FILL OUT!!!
 
   // CLIMBER CONSTANTS
   public static final int CLIMBER_RELAY_PORT_ID = 0;

@@ -7,7 +7,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 
 public class ElevatorRestCommand extends Command{
     private final ElevatorSubsystem mElevatorSubsystem;
-    private final double desiredHeight = Constants.ELEVATOR_RESTING_POSITION_METERS;
+    private final double desiredHeight = Constants.ELEVATOR_RESTING_POSITION_INCHES;
 
     public ElevatorRestCommand(ElevatorSubsystem mElevatorSubsystem) {
         this.mElevatorSubsystem = mElevatorSubsystem;

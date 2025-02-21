@@ -230,7 +230,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   // tells us if the elevator is at a safe height
   // Note: maybe this should be < slightly taller than L4?
   public boolean isElevatorSafe() {
-    return getEncoderPositionMeters() <= Constants.ELEVATOR_MAX_SAFE_POSITION_METERS;
+    return getEncoderPositionMeters() <= Constants.ELEVATOR_MAX_SAFE_POSITION_INCHES;
   }
 
   // how far we need to raise the elevator to reach the coral level we define as the "goal"

@@ -7,7 +7,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 
 public class ElevatorL2CoralCommand extends Command{
     private final ElevatorSubsystem mElevatorSubsystem;
-    private final double desiredHeight = Constants.L2_CORAL_METERS;
+    private final double desiredHeight = Constants.L2_CORAL_INCHES;
 
     public ElevatorL2CoralCommand(ElevatorSubsystem mElevatorSubsystem) {
         this.mElevatorSubsystem = mElevatorSubsystem;
