@@ -6,6 +6,9 @@ package frc.robot;
 
 import com.pathplanner.lib.config.PIDConstants;
 
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Distance;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -41,6 +44,10 @@ public final class Constants {
   // ELEVATOR CONSTANTS
   // this is measured from bottom of coral payload to ground
   public static final double ELEVATOR_RESTING_POSITION_INCHES = 0; // TODO: FILL OUT!!!
+  public static final Distance ELEVATOR_SPROCKET_RADIUS = Distance.ofBaseUnits(0.8755, Units.Inches);
+  public static final double ELEVATOR_MOTOR_GEAR_RATIO = 1.0 / 20.0;
+  public static final double ELEVATOR_MAX_VELOCITY_METERS_PER_SECOND = 0.75;
+  public static final double ELEVATOR_MAX_ACCELERATION = 0.25;
 
   // CLIMBER CONSTANTS
   public static final int CLIMBER_RELAY_PORT_ID = 0;
