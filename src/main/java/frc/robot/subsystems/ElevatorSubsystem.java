@@ -1,5 +1,10 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
+import com.revrobotics.spark.SparkAbsoluteEncoder;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkMax;
 import frc.robot.Constants;
 
 import java.util.function.DoubleSupplier;
@@ -32,6 +37,22 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 @Logged
 public class ElevatorSubsystem extends SubsystemBase {
+  /** SETTING UP CLASS VARIABLES */
+
+  // Elevator Motors
+  private final SparkMax mLeftElevatorMotor; // the "master"
+  private final SparkMax mRightElevatorMotor;
+
+  // Elevator FeedForward obj
+  private final ElevatorFeedforward mElevatorFeedforward = new ElevatorFeedforward(0, 0, 0); // TODO: figure out what these constants should be
+
+  /** Limit Switches for top & bottom of elevator
+   * args = DIO channel for digital input
+  */
+  // private final DigitalInput mElevatorLimitSwitchBottom = 
+  //   new DigitalInput(Constants.BOTTOM_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL);
+  // private final DigitalInput mElevatorLimitSwitchTop = 
+  //   new DigitalInput(Constants.TOP_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL);
 
   private static final DistanceUnit POSITION_UNIT = Units.Inch;
   private static final LinearVelocityUnit VELOCITY_UNIT = Units.InchesPerSecond;
