@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -37,15 +38,15 @@ public class RobotContainer {
   private final SendableChooser<Command> mCommandChooser;
 
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(mDrivetrainSubsystem.getSwerveDrive(),
-      () -> mDriverController.getLeftY() * -1,
-      () -> mDriverController.getLeftX() * -1)
-      .withControllerRotationAxis(mDriverController::getRightX)
-      .deadband(0.8)
-      .scaleTranslation(0.8)
-      .allianceRelativeControl(true);
+                                                                () -> mDriverController.getLeftY() * -1,
+                                                                () -> mDriverController.getLeftX() * -1)
+                                                            .withControllerRotationAxis(mDriverController::getRightX)
+                                                            .deadband(0.8)
+                                                            .scaleTranslation(0.8)
+                                                            .allianceRelativeControl(true);
 
   SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(true)
-      .allianceRelativeControl(false);
+                                                             .allianceRelativeControl(false);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -64,6 +65,7 @@ public class RobotContainer {
 
   private void configureBindings() {
 
+    mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(driveRobotOriented));
     // var teleopDriveWithAngularVelocity =
     // SwerveInputStream.of(mDrivetrainSubsystem.getSwerveDrive(),
     // () -> mDriverController.getLeftX() * -1,
