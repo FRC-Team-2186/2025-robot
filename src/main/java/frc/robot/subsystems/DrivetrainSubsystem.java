@@ -29,7 +29,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
@@ -71,6 +73,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     mSwerveDrive.setModuleEncoderAutoSynchronize(false, 1);
 
     initPathPlanner();
+    // This is meant to flip the direction of the front of the robot on the alliance station we are at in competition. FIXME Enable only if facing this issue
+    RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithAlliance));
   }
 
   @NotLogged
@@ -115,6 +119,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   public SwerveModuleState[] getCurrentModuleStates() {
     return mSwerveDrive.getStates();
+  }
+  public Pose2d getPose()
+  {
+    return mSwerveDrive.getPose();
   }
 
   public ChassisSpeeds convertOperatorInputToChassisSpeeds(double pTranslationX, double pTranslationY,
@@ -190,4 +198,32 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     PathfindingCommand.warmupCommand().schedule();
   }
+   /**
+   * This will zero (calibrate) the robot to assume the current position is facing forward
+   * <p>
+   * If red alliance rotate the robot 180 after the drviebase zero command
+   */
+  public void zeroGyro()
+  {
+    mSwerveDrive.zeroGyro();
+  }
+  private boolean isRedAlliance()
+  {
+    var alliance = DriverStation.getAlliance();
+    return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
+  }
+
+  public void zeroGyroWithAlliance()
+  {
+    if (isRedAlliance())
+    {
+      zeroGyro();
+      //Set the pose 180 degrees
+      resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));
+    } else
+    {
+      zeroGyro();
+    }
+  }
+
 }
