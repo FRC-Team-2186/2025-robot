@@ -1,11 +1,10 @@
 package frc.robot.subsystems;
 
-import frc.robot.Constants;
-
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
+import frc.robot.Constants;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -32,6 +31,15 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 @Logged
 public class ElevatorSubsystem extends SubsystemBase {
+  /** SETTING UP CLASS VARIABLES */
+
+  /** Limit Switches for top & bottom of elevator
+   * args = DIO channel for digital input
+  */
+  // private final DigitalInput mElevatorLimitSwitchBottom = 
+  //   new DigitalInput(Constants.BOTTOM_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL);
+  // private final DigitalInput mElevatorLimitSwitchTop = 
+  //   new DigitalInput(Constants.TOP_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL);
 
   private static final DistanceUnit POSITION_UNIT = Units.Inch;
   private static final LinearVelocityUnit VELOCITY_UNIT = Units.InchesPerSecond;

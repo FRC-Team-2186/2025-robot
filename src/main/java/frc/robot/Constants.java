@@ -7,6 +7,8 @@ package frc.robot;
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 
 /**
@@ -28,22 +30,22 @@ public final class Constants {
   public static final int RIGHT_ELEVATOR_MOTOR_CAN_ID = 22; // TODO: FILL OUT!!!
 
   // Elevator Limit Switch Constants
-  public static final int TOP_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = -1; // TODO: FILL OUT!!!
-  public static final int BOTTOM_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = -1; // TODO: FILL OUT!!!
+  public static final int TOP_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = 0; // TODO: FILL OUT!!!
+  public static final int BOTTOM_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = 0; // TODO: FILL OUT!!!
 
   // Elevator Encoder Constants
-  public static final int ELEVATOR_ABSOLUTE_ENCODER_OFFSET = -1; // TODO: FILL OUT!!!
-  public static final double ELEVATOR_MAX_SAFE_POSITION_METERS = -1; // TODO: FILL OUT!!!
+  public static final int ELEVATOR_ABSOLUTE_ENCODER_OFFSET = 0; // TODO: FILL OUT!!!
+  public static final double ELEVATOR_MAX_SAFE_POSITION_INCHES = 0; // TODO: FILL OUT!!!
 
   // Coral Reef Level Constants
   // where we want the bottom of coral payload to be at each reef level
-  public static final double L2_CORAL_METERS = 0.81; // TODO: ROUGH ESTIMATE - CONFIRM !!!
-  public static final double L3_CORAL_METERS = 1.21; // TODO: ROUGH ESTIMATE - CONFIRM !!!
-  public static final double L4_CORAL_METERS = 1.83; // TODO: ROUGH ESTIMATE - CONFIRM !!!
+  public static final Distance L2_CORAL_INCHES = Distance.ofBaseUnits(21.0, Units.Inches); // TODO: ROUGH ESTIMATE - CONFIRM !!!
+  public static final Distance L3_CORAL_INCHES = Distance.ofBaseUnits(36.0, Units.Inches); // TODO: ROUGH ESTIMATE - CONFIRM !!!
+  public static final Distance L4_CORAL_INCHES = Distance.ofBaseUnits(48.0, Units.Inches); // TODO: ROUGH ESTIMATE - CONFIRM !!!
 
   // ELEVATOR CONSTANTS
   // this is measured from bottom of coral payload to ground
-  public static final double ELEVATOR_RESTING_POSITION_METERS = 0; // TODO: FILL OUT!!!
+  public static final double ELEVATOR_RESTING_POSITION_INCHES = 0; // TODO: FILL OUT!!!
   public static final Distance ELEVATOR_SPROCKET_RADIUS = Distance.ofBaseUnits(0.8755, Units.Inches);
   public static final double ELEVATOR_MOTOR_GEAR_RATIO = 1.0 / 20.0;
   public static final double ELEVATOR_MAX_VELOCITY_METERS_PER_SECOND = 0.75;
@@ -55,6 +57,23 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  // CORAL ARM SUBSYSTEM CONSTANTS
+  public static final int CORAL_ARM_MOTOR_CAN_ID = 0; // TODO: FILL OUT!!!
+  public static final double CORAL_ARM_ABSOLUTE_ENCODER_OFFSET = 0; // TODO: FILL OUT!!!
+  public static final int BOTTOM_CORAL_LIMIT_SWITCH_DIO_CHANNEL = 0; // TODO: FILL OUT!!!
+  public static final int TOP_CORAL_LIMIT_SWITCH_DIO_CHANNEL = 0; // TODO: FILL OUT!!!
+  public static final double CORAL_ARM_MAX_SAFE_ANGLE_DEGREES = 0.0; // TODO FILL OUT!!!
+  public static final double CORAL_MAX_VELOCITY_RADIANS_PER_SECOND = 0.0;
+  public static final double CORAL_MAX_ACCELERATION = 0.0;
+
+  // CORAL INTAKE SUBSYSTEM CONSTANTS
+  public static final int CORAL_INTAKE_MOTOR_CAN_ID = 0; // TODO: FILL OUT!!!
+  // beam break sensor
+  public static final int CORAL_BEAM_BREAK_DIO_CHANNEL = 0; // TODO: FILL OUT!!!
+  // auto Coral Intake/Outtake Speeds
+  public static final double CORAL_INTAKE_SPEED = 0.0;
+  public static final double CORAL_OUTTAKE_SPEED = 0.0;
 
   // Path Planner PID constants
   public static final PIDConstants PATH_FOLLOWING_PID_CONSTANTS_POSITIONAL = new PIDConstants(5.1275, 0.755);
