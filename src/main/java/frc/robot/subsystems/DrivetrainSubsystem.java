@@ -74,7 +74,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     initPathPlanner();
     // This is meant to flip the direction of the front of the robot on the alliance station we are at in competition. FIXME Enable only if facing this issue
-    // RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithAlliance));
+    RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithAlliance));
   }
 
   @NotLogged
