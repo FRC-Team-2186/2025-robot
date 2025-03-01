@@ -7,6 +7,8 @@ package frc.robot;
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 
 /**
@@ -62,6 +64,8 @@ public final class Constants {
   public static final int BOTTOM_CORAL_LIMIT_SWITCH_DIO_CHANNEL = 0; // TODO: FILL OUT!!!
   public static final int TOP_CORAL_LIMIT_SWITCH_DIO_CHANNEL = 0; // TODO: FILL OUT!!!
   public static final double CORAL_ARM_MAX_SAFE_ANGLE_DEGREES = 0.0; // TODO FILL OUT!!!
+  public static final double CORAL_MAX_VELOCITY_RADIANS_PER_SECOND = 0.0;
+  public static final double CORAL_MAX_ACCELERATION = 0.0;
 
   // CORAL INTAKE SUBSYSTEM CONSTANTS
   public static final int CORAL_INTAKE_MOTOR_CAN_ID = 0; // TODO: FILL OUT!!!
@@ -70,13 +74,6 @@ public final class Constants {
   // auto Coral Intake/Outtake Speeds
   public static final double CORAL_INTAKE_SPEED = 0.0;
   public static final double CORAL_OUTTAKE_SPEED = 0.0;
-
-  // ALGAE SUBSYSTEM CONSTANTS
-  public static final int ALGAE_LEFT_MOTOR_CAN_ID = 0;
-  public static final int ALGAE_RIGHT_MOTOR_CAN_ID = 0;
-  public static final Distance ALGAE_UPPER_INCHES = Distance.ofBaseUnits(0.0, Units.Inches);
-  public static final Distance ALGAE_LOWER_INCHES = Distance.ofBaseUnits(0.0, Units.Inches);
-
 
   // Path Planner PID constants
   public static final PIDConstants PATH_FOLLOWING_PID_CONSTANTS_POSITIONAL = new PIDConstants(5.1275, 0.755);
