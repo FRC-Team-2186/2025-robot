@@ -37,9 +37,9 @@ public final class Constants {
 
   // Coral Reef Level Constants
   // where we want the bottom of coral payload to be at each reef level
-  public static final double L2_CORAL_INCHES = 21.0; // TODO: ROUGH ESTIMATE - CONFIRM !!!
-  public static final double L3_CORAL_INCHES = 36.0; // TODO: ROUGH ESTIMATE - CONFIRM !!!
-  public static final double L4_CORAL_INCHES = 48.0; // TODO: ROUGH ESTIMATE - CONFIRM !!!
+  public static final Distance L2_CORAL_INCHES = Distance.ofBaseUnits(21.0, Units.Inches); // TODO: ROUGH ESTIMATE - CONFIRM !!!
+  public static final Distance L3_CORAL_INCHES = Distance.ofBaseUnits(36.0, Units.Inches); // TODO: ROUGH ESTIMATE - CONFIRM !!!
+  public static final Distance L4_CORAL_INCHES = Distance.ofBaseUnits(48.0, Units.Inches); // TODO: ROUGH ESTIMATE - CONFIRM !!!
 
   // ELEVATOR CONSTANTS
   // this is measured from bottom of coral payload to ground
@@ -74,6 +74,9 @@ public final class Constants {
   // ALGAE SUBSYSTEM CONSTANTS
   public static final int ALGAE_LEFT_MOTOR_CAN_ID = 0;
   public static final int ALGAE_RIGHT_MOTOR_CAN_ID = 0;
+  public static final Distance ALGAE_UPPER_INCHES = Distance.ofBaseUnits(0.0, Units.Inches);
+  public static final Distance ALGAE_LOWER_INCHES = Distance.ofBaseUnits(0.0, Units.Inches);
+
 
   // Path Planner PID constants
   public static final PIDConstants PATH_FOLLOWING_PID_CONSTANTS_POSITIONAL = new PIDConstants(5.1275, 0.755);
