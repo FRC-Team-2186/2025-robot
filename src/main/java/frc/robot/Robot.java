@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.logging.EpilogueBackend;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -31,8 +32,9 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
     mRobotContainer = new RobotContainer();
+    Epilogue.bind(this);
 
-    //EpilogueBackend.bind(this);
+    // EpilogueBackend.bind(this);
   }
 
   /**
