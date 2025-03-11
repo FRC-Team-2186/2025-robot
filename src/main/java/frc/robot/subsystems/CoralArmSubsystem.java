@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
+
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -31,188 +33,145 @@ import frc.robot.Constants;
 
 @Logged
 public class CoralArmSubsystem extends SubsystemBase {
-    /** SETTING UP CLASS VARIABLES */
+  /** SETTING UP CLASS VARIABLES */
 
-    private static final AngleUnit POSITION_UNIT = Units.Radians;
-    private static final AngularVelocityUnit VELOCITY_UNIT = Units.RadiansPerSecond;
+  private static final AngleUnit POSITION_UNIT = Units.Degrees;
+  private static final AngularVelocityUnit VELOCITY_UNIT = Units.DegreesPerSecond;
 
-    // Coral Motors
-    private final SparkMax mCoralArmMotor = new SparkMax(Constants.CORAL_ARM_MOTOR_CAN_ID,
-    MotorType.kBrushless);
+  // Coral Motors
+  private final SparkMax mCoralArmMotor = new SparkMax(Constants.CORAL_ARM_MOTOR_CAN_ID,
+      MotorType.kBrushless);
 
-    // Coral feedforward obj
-    // initializing feedforward TODO: fill out
-    private final ArmFeedforward mCoralArmFeedforward = new ArmFeedforward(0, 0, 0);
+  // Coral feedforward obj
+  // initializing feedforward TODO: fill out
+  private final ArmFeedforward mCoralArmFeedforward = new ArmFeedforward(0, 0, 0);
 
-    // Coral arm encoder
-    private RelativeEncoder mCoralEncoder;
+  // Coral arm encoder
+  private final SparkAbsoluteEncoder mEncoder;
 
-    // pid for coral arm
-    private final ProfiledPIDController mCoralPidController = new ProfiledPIDController(0.0, 0.0, 0.0,
-    new Constraints(Constants.CORAL_MAX_VELOCITY_RADIANS_PER_SECOND, Constants.CORAL_MAX_ACCELERATION));
+  // pid for coral arm
+  private final ProfiledPIDController mCoralPidController = new ProfiledPIDController(0.0, 0.0, 0.0,
+      new Constraints(Constants.CORAL_MAX_VELOCITY_RADIANS_PER_SECOND, Constants.CORAL_MAX_ACCELERATION));
 
-    // SysId routine to model the behavior of our coral arm subsystem
-    private final SysIdRoutine mCoralArmSysIdRoutine;
+  // SysId routine to model the behavior of our coral arm subsystem
+  private final SysIdRoutine mCoralArmSysIdRoutine;
 
-    // configuration obj to configure the motor controller
-    SparkFlexConfig config = new SparkFlexConfig();
+  // configuration obj to configure the motor controller
+  SparkFlexConfig config = new SparkFlexConfig();
 
-    private final DigitalInput mCoralLimitSwitchBottom = 
-      new DigitalInput(Constants.BOTTOM_CORAL_LIMIT_SWITCH_DIO_CHANNEL);
-    private final DigitalInput mCoralLimitSwitchTop = 
-      new DigitalInput(Constants.TOP_CORAL_LIMIT_SWITCH_DIO_CHANNEL);
+  /* END CLASS VARIABLES */
 
-    /* END CLASS VARIABLES */
+  // constructor
+  public CoralArmSubsystem() {
+    var sparkConfig = new SparkMaxConfig();
+    sparkConfig.idleMode(IdleMode.kBrake);
 
-    // constructor
-    public CoralArmSubsystem() {
-        var sparkConfig = new SparkMaxConfig();
-        sparkConfig.idleMode(IdleMode.kBrake);
+    mCoralArmMotor.configure(sparkConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    mEncoder = mCoralArmMotor.getAbsoluteEncoder();
 
-        mCoralArmMotor.configure(sparkConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-
-        mCoralArmSysIdRoutine = new SysIdRoutine(new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(volts -> {
-        mCoralArmMotor.setVoltage(volts);
+    mCoralArmSysIdRoutine = new SysIdRoutine(
+        new SysIdRoutine.Config(Units.Volts.of(0.5).per(Units.Second), Units.Volts.of(4.0), Units.Seconds.of(10)),
+        new SysIdRoutine.Mechanism(volts -> {
+          mCoralArmMotor.setVoltage(volts);
         }, this::handleSysIdLog, this));
-    }
+  }
 
-    /* MOTOR FUNCTIONS */
+  /* ENCODER FUNCTIONS */
 
-    // sets the coral arm motor speed
-    public void setCoralArmMotorSpeed(double pMotorSpeed) {
-        setCoralMotorValue(pMotorSpeed);
-    }
+  // gets position of encoder/arm in rotations -> returned as an Angle obj
+  public Angle getArmPosition() {
+    return Units.Rotations.of(mEncoder.getPosition());
+  }
 
-    // actually sets the speed on the motors 
-    private void setCoralMotorValue(double pMotorSpeed){
-        if (pMotorSpeed > 0.0 && atTop()) {
-        pMotorSpeed = 0.0;
-        }
-        if (pMotorSpeed < 0.0 && atBottom()) {
-        pMotorSpeed = 0.0;
-        }
+  public double getArmPositionDegrees() {
+    return getArmPosition().in(Units.Degrees);
+  }
 
-        SmartDashboard.putNumber("Coral Arm: Motor Speed", pMotorSpeed);
-        mCoralArmMotor.set(pMotorSpeed);
-    }
+  // angular velocity of the arm
+  public AngularVelocity getArmVelocity() {
+    var rpm = mEncoder.getVelocity();
+    return Units.RotationsPerSecond.of(rpm / 60.0);
+  }
 
-    // setting motor voltage
-    private void setMotorVoltage(Voltage pVolts) {
-        if (pVolts.gt(Units.Volts.zero()) && atTop()) {
-        pVolts = Units.Volts.zero();
-        }
-        if (pVolts.lt(Units.Volts.zero()) && atBottom()) {
-        pVolts = Units.Volts.zero();
-        }
+  public double getArmVelocityDegrees() {
+    return getArmVelocity().in(Units.DegreesPerSecond);
+  }
 
-        mCoralArmMotor.setVoltage(pVolts);
-    }
+  // execute command with PID based on the goal angle set (radians)
+  private void executeWithPid() {
+    var pidOutput = mCoralPidController.calculate(getArmPosition().in(POSITION_UNIT));
+    var feedforward = mCoralArmFeedforward.calculate(mCoralPidController.getSetpoint().position,
+        mCoralPidController.getSetpoint().velocity);
 
-    /* END MOTOR FUNCTIONS */
+    SmartDashboard.putNumber("PID Output", pidOutput);
+    SmartDashboard.putNumber("FeedForward", feedforward);
 
+    var motorOutput = (pidOutput * RobotController.getBatteryVoltage()) + feedforward;
 
-    /* ENCODER FUNCTIONS */
+    mCoralArmMotor.setVoltage(motorOutput);
+  }
 
-    // gets position of encoder/arm in rotations -> returned as an Angle obj
-    public Angle getArmPosition() {
-        return Units.Rotations.of(mCoralEncoder.getPosition());
-    }
+  private void pidBegin(Angle pGoal) {
+    resetPidController();
+    mCoralPidController.setGoal(pGoal.in(POSITION_UNIT));
+  }
 
-    // angular velocity of the arm
-    public AngularVelocity getArmVelocity() {
-        return Units.RotationsPerSecond.of(mCoralEncoder.getVelocity());
-    }
+  private void pidEnd() {
+    mCoralArmMotor.stopMotor();
+    resetPidController();
+  }
 
-    // tells us if the elevator is at its max height based on the top limit switch
-    public boolean atTop() {
-        // return mCoralLimitSwitchTop.get();
-        return false;
-        // potential TODO: Ideally also determine this programatically
-    }
+  // reset PID to ignore any previously set values
+  public void resetPidController() {
+    mCoralPidController.reset(getArmPosition().in(POSITION_UNIT), getArmVelocity().in(VELOCITY_UNIT));
+  }
 
-    // tells us if the elevator is in it's resting position based on the bottom limit switch
-    public boolean atBottom() {
-        // return !mCoralLimitSwitchBottom.get();
-        return false;
-        // potential TODO: Ideally also determine this programatically
-    }
+  /* END ENCODER FUNCTIONS */
 
-    // execute command with PID based on the goal angle set (radians)
-    private void executeWithPid() {
-        var pidOutput = mCoralPidController.calculate(getArmPosition().in(POSITION_UNIT));
-        var feedforward = mCoralArmFeedforward.calculate(mCoralPidController.getSetpoint().position, mCoralPidController.getSetpoint().velocity);
+  /* SYS ID FUNCTIONS */
 
-        SmartDashboard.putNumber("PID Output", pidOutput);
-        SmartDashboard.putNumber("FeedForward", feedforward);
+  // In this test, the elevator is gradually sped-up such that the voltage
+  // corresponding to acceleration is negligible (hence, “as if static”)
+  public Command sysidQuasistatic(SysIdRoutine.Direction pDirection) {
+    return mCoralArmSysIdRoutine.quasistatic(pDirection);
+  }
 
-        var motorOutput = (pidOutput * RobotController.getBatteryVoltage()) + feedforward;
+  // In this test, a constant ‘step voltage’ is given to the mechanism, so that
+  // the behavior while accelerating can be determined.
+  public Command sysidDynamic(SysIdRoutine.Direction pDirection) {
+    return mCoralArmSysIdRoutine.dynamic(pDirection);
+  }
 
-        setMotorVoltage(Units.Volts.of(motorOutput));
-    }
+  // logging sys id routines
+  private void handleSysIdLog(SysIdRoutineLog pLog) {
+    var motorVolts = Units.Volts.of(mCoralArmMotor.getAppliedOutput() * mCoralArmMotor.getBusVoltage());
 
-    // reset PID to ignore any previously set values
-    public void resetPidController() {
-        mCoralPidController.reset(getArmPosition().in(POSITION_UNIT), getArmVelocity().in(VELOCITY_UNIT));
-    }
+    pLog.motor("coral arm")
+        .voltage(motorVolts.unaryMinus())
+        .angularPosition(getArmPosition())
+        .angularVelocity(getArmVelocity());
+  }
 
-    /* END ENCODER FUNCTIONS */
+  /* END SYS ID FUNCTIONS */
 
+  /* COMMANDS */
 
-    /* SYS ID FUNCTIONS */
+  // teleop command to move Arm up and down
+  public Command moveCoralArmCommand(DoubleSupplier pSource) {
+    return run(() -> {
+      mCoralArmMotor.set(pSource.getAsDouble() * 0.25);
+    });
+  }
 
-    // In this test, the elevator is gradually sped-up such that the voltage
-    // corresponding to acceleration is negligible (hence, “as if static”)
-    public Command sysidQuasistatic(SysIdRoutine.Direction pDirection) {
-        if (pDirection == SysIdRoutine.Direction.kForward) {
-            return mCoralArmSysIdRoutine.quasistatic(pDirection).until(() -> atTop());
-        } else {
-            return mCoralArmSysIdRoutine.quasistatic(pDirection).until(() -> atBottom());
-        }
-    }
+  // move arm to specified position
+  public Command moveCoralToPositionCommand(Angle pDesiredPosition) {
+    return startRun(() -> {
+      pidBegin(pDesiredPosition);
+    }, () -> {
+      executeWithPid();
+    }).until(mCoralPidController::atGoal).finallyDo(this::pidEnd);
+  }
 
-    // In this test, a constant ‘step voltage’ is given to the mechanism, so that
-    // the behavior while accelerating can be determined.
-    public Command sysidDynamic(SysIdRoutine.Direction pDirection) {
-        if (pDirection == SysIdRoutine.Direction.kForward) {
-        return mCoralArmSysIdRoutine.dynamic(pDirection).until(() -> atTop());
-        } else {
-        return mCoralArmSysIdRoutine.dynamic(pDirection).until(() -> atBottom());
-        }
-    }
-
-    // logging sys id routines
-    private void handleSysIdLog(SysIdRoutineLog pLog) {
-        var motorVolts =
-            Units.Volts.of(mCoralArmMotor.getAppliedOutput() * mCoralArmMotor.getBusVoltage());
-
-        pLog.motor("coral arm")
-            .voltage(motorVolts.negate())
-            .angularPosition(getArmPosition())
-            .angularVelocity(getArmVelocity());
-    }
-
-    /* END SYS ID FUNCTIONS */
-
-
-    /* COMMANDS */
-
-    // teleop command to move Arm up and down
-    public Command moveCoralArmCommand(DoubleSupplier pSource) {
-        return run(() -> {
-        setCoralArmMotorSpeed(pSource.getAsDouble());
-        });
-    }
-
-    // move arm to specified position
-    public Command moveCoralToPositionCommand(Angle pDesiredPosition) {
-        return startRun(() -> {
-        resetPidController();
-        mCoralPidController.setGoal(pDesiredPosition.in(POSITION_UNIT));
-        }, () -> {
-        executeWithPid();
-        }).until(mCoralPidController::atGoal).finallyDo(() -> setCoralMotorValue(0));
-    }
-
-    /* END COMMANDS */
+  /* END COMMANDS */
 
 }
