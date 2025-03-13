@@ -17,6 +17,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,12 +37,14 @@ public class RobotContainer {
   @NotLogged
   private final CommandXboxController mDriverController = new CommandXboxController(0);
 
+  @NotLogged
+  private final CommandXboxController mOperatorController = new CommandXboxController(1);
+
   private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
   private final ClimberSubsystem mClimberSubsystem = new ClimberSubsystem();
   private final ElevatorSubsystem mElevatorSubsystem = new ElevatorSubsystem();
-  // private final CoralArmSubsystem mArmSubsystem = new CoralArmSubsystem();
-  // private final CoralIntakeSubsystem mIntakeSubsystem = new
-  // CoralIntakeSubsystem();
+  private final CoralArmSubsystem mArmSubsystem = new CoralArmSubsystem();
+  private final CoralIntakeSubsystem mIntakeSubsystem = new CoralIntakeSubsystem();
 
   private final SendableChooser<Command> mCommandChooser;
 
@@ -49,7 +52,7 @@ public class RobotContainer {
       () -> mDriverController.getLeftY() * -1,
       () -> mDriverController.getLeftX() * -1)
       .withControllerRotationAxis(mDriverController::getRightX)
-      .deadband(0.8)
+      .deadband(0.1)
       .scaleTranslation(0.8)
       .allianceRelativeControl(true);
 
@@ -63,14 +66,23 @@ public class RobotContainer {
     mCommandChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Autonomous", mCommandChooser);
 
-    // Configure the trigger bindings
-    configureBindings();
-
+    mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(mDriveAngularVelocity));
     mClimberSubsystem.setDefaultCommand(mClimberSubsystem.stopCommand());
     mElevatorSubsystem.setDefaultCommand(mElevatorSubsystem.directCommand(() -> 0.0));
-  }
+    mIntakeSubsystem.setDefaultCommand(mIntakeSubsystem.handleCoralCommand(() -> 0.0));
+    mArmSubsystem.setDefaultCommand(
+        mArmSubsystem.moveCoralArmCommand(() -> MathUtil.applyDeadband(mOperatorController.getRightY(), 0.15) * 0.25));
 
-  private void configureBindings() {
+    mDriverController.leftTrigger(0.25).whileTrue(mIntakeSubsystem.ejectCoralCommand());
+    mDriverController.rightTrigger(0.25).whileTrue(mIntakeSubsystem.intakeCoralCommand());
+
+    // mOperatorController.a().whileTrue(mElevatorSubsystem.moveToHeightCommand(Constants.CORAL_HEIGHT_L2));
+    // mOperatorController.b().whileTrue(mElevatorSubsystem.moveToHeightCommand(Constants.CORAL_HEIGHT_L3));
+    // mOperatorController.y().whileTrue(mElevatorSubsystem.moveToHeightCommand(Constants.CORAL_HEIGHT_L4));
+    // mOperatorController.x().whileTrue(mElevatorSubsystem.homeCommand());
+
+    mDriverController.a().whileTrue(mArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(0.0)));
+    mDriverController.b().whileTrue(mArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(45.0)));
   }
 
   /**

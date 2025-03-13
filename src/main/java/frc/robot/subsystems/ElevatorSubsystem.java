@@ -1,15 +1,11 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Volt;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkMaxAlternateEncoder;
-
 import frc.robot.Constants;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -19,27 +15,22 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.DistanceUnit;
+import edu.wpi.first.units.LinearAccelerationUnit;
 import edu.wpi.first.units.LinearVelocityUnit;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -47,8 +38,10 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 public class ElevatorSubsystem extends SubsystemBase {
   private static final DistanceUnit POSITION_UNIT = Units.Inches;
   private static final LinearVelocityUnit VELOCITY_UNIT = Units.InchesPerSecond;
+  private static final LinearAccelerationUnit ACCELERATION_UNIT = Units.InchesPerSecond.per(Units.Second);
 
-  private static final TrapezoidProfile.Constraints MOTION_CONSTRAINTS = new Constraints(50.0, 25.0);
+  private static final TrapezoidProfile.Constraints MOTION_CONSTRAINTS = new Constraints(
+      Constants.ELEVATOR_MAX_VELOCITY.in(VELOCITY_UNIT), Constants.ELEVATOR_MAX_ACCELERATION.in(ACCELERATION_UNIT));
 
   private final SparkMax mLeftMotor = new SparkMax(Constants.LEFT_ELEVATOR_MOTOR_CAN_ID,
       MotorType.kBrushless);

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.logging.EpilogueBackend;
@@ -33,6 +34,11 @@ public class Robot extends TimedRobot {
     // and put our autonomous chooser on the dashboard.
     mRobotContainer = new RobotContainer();
     Epilogue.bind(this);
+    var camera = CameraServer.startAutomaticCapture();
+    if (camera != null) {
+      camera.setResolution(320, 240);
+      camera.setFPS(15);
+    }
 
     // EpilogueBackend.bind(this);
   }
