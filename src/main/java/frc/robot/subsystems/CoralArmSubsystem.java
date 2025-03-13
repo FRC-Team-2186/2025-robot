@@ -41,6 +41,7 @@ public class CoralArmSubsystem extends SubsystemBase {
   // Coral Motors
   private final SparkMax mCoralArmMotor = new SparkMax(Constants.CORAL_ARM_MOTOR_CAN_ID,
       MotorType.kBrushless);
+  private final SparkMax mCoralArmIntakeMotor = new SparkMax(Constants.CORAL_INTAKE_MOTOR_CAN_ID, MotorType.kBrushless);
 
   // Coral feedforward obj
   // initializing feedforward TODO: fill out
@@ -163,6 +164,11 @@ public class CoralArmSubsystem extends SubsystemBase {
     });
   }
 
+  public Command setCoralIntakeSpeedCommand(DoubleSupplier pTrigger){
+    return run(() -> {
+      mCoralArmIntakeMotor.set(pTrigger.getAsDouble()*0.5);
+    });
+  }
   // move arm to specified position
   public Command moveCoralToPositionCommand(Angle pDesiredPosition) {
     return startRun(() -> {
