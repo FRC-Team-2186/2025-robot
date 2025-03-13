@@ -41,7 +41,7 @@ public final class Constants {
 
   // Coral Reef Level Constants
   // where we want the bottom of coral payload to be at each reef level
-  public static final Distance RESTING_CORAL_INCHES = Units.Inches.of(173);
+  public static final Distance RESTING_CORAL_INCHES = Units.Inches.of(0);
 
   public static final Distance L2_CORAL_INCHES = Units.Inches.of(10.11); // TODO: ROUGH ESTIMATE -
                                                                                            // CONFIRM !!!
@@ -78,6 +78,7 @@ public final class Constants {
   // CORAL INTAKE SUBSYSTEM CONSTANTS
   public static final int CORAL_INTAKE_MOTOR_CAN_ID = 25;
   public static final double CORAL_DEFAULT_DEGREES = 120.0;
+  public static final double CORAL_CARRYING_POSITION_DEGREES = 173;
   // beam break sensor
   public static final int CORAL_BEAM_BREAK_DIO_CHANNEL = 2;
   // auto Coral Intake/Outtake Speeds
