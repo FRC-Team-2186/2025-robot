@@ -44,10 +44,9 @@ public class CoralArmSubsystem extends SubsystemBase {
   // Coral Motors
   private final SparkMax mCoralArmMotor = new SparkMax(Constants.CORAL_ARM_MOTOR_CAN_ID,
       MotorType.kBrushless);
-  private final SparkMax mCoralArmIntakeMotor = new SparkMax(Constants.CORAL_INTAKE_MOTOR_CAN_ID, MotorType.kBrushless);
 
   // Coral feedforward obj
-  private final ArmFeedforward mCoralArmFeedforward = new ArmFeedforward(0, 0.69, 0.2325, 1);
+  private final ArmFeedforward mCoralArmFeedforward = new ArmFeedforward(0, 0.125, 1.015625, 0);
 
   // Coral arm encoder
   private final SparkAbsoluteEncoder mEncoder;
@@ -98,7 +97,7 @@ public class CoralArmSubsystem extends SubsystemBase {
   public double getArmPositionDegrees() {
     return getArmPosition().in(Units.Degrees);
   }
-  public boolean getIfAtRestingPosition(){
+  public boolean getAtRestingPosition(){
     return getArmPosition() == Units.Degrees.of(87.9);
   }
 
@@ -199,12 +198,6 @@ public class CoralArmSubsystem extends SubsystemBase {
   public Command moveCoralArmCommand(DoubleSupplier pSource) {
     return run(() -> {
       mCoralArmMotor.set(pSource.getAsDouble());
-    });
-  }
-
-  public Command setCoralIntakeSpeedCommand(DoubleSupplier pTrigger){
-    return run(() -> {
-      mCoralArmIntakeMotor.set(pTrigger.getAsDouble()*0.5);
     });
   }
   // move arm to specified position

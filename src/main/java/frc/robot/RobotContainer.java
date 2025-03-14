@@ -12,7 +12,11 @@ import frc.robot.subsystems.CoralIntakeSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import swervelib.SwerveInputStream;
 
+import java.util.concurrent.locks.Condition;
+
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.MathUtil;
@@ -25,8 +29,10 @@ import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -71,6 +77,17 @@ public class RobotContainer {
    */
   public RobotContainer() {
     mCommandChooser = AutoBuilder.buildAutoChooser();
+
+    var awaitCoralCommand = Commands.sequence(
+      mIntakeSubsystem.intakeCoralCommand().until(mIntakeSubsystem::hasCoral), mIntakeSubsystem.intakeCoralCommand().withTimeout(0.25));
+    var ejectCoralCommand = Commands.sequence(
+      mIntakeSubsystem.ejectCoralCommand().until(() -> !mIntakeSubsystem.hasCoral()),
+      mIntakeSubsystem.ejectCoralCommand().withTimeout(0.25));
+
+    NamedCommands.registerCommand("elevator_to_l4", new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L4_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-170))));
+    NamedCommands.registerCommand("drop_coral", mIntakeSubsystem.ejectCoralCommand());
+    NamedCommands.registerCommand("elevator_to_bottom", mElevatorSubsystem.homeCommand());
+    NamedCommands.registerCommand("await_coral", new SequentialCommandGroup(mIntakeSubsystem.intakeCoralCommand().until(mIntakeSubsystem::hasCoral),  mIntakeSubsystem.intakeCoralCommand().withTimeout(0.25)));
     SmartDashboard.putData("Autonomous", mCommandChooser);
 
     mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(mDriveAngularVelocity));
@@ -97,12 +114,12 @@ public class RobotContainer {
     mOperatorController.y().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L4_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-170))));
 
 
-    mDriverController.rightTrigger().whileTrue(mCoralArmSubsystem.setCoralIntakeSpeedCommand(() -> mOperatorController.getRightTriggerAxis()));
-    mDriverController.leftTrigger().whileTrue(mCoralArmSubsystem.setCoralIntakeSpeedCommand(() -> mOperatorController.getRightTriggerAxis() * -1));
+    mDriverController.rightTrigger().whileTrue(mIntakeSubsystem.intakeCoralCommand());
+    mDriverController.leftTrigger().whileTrue(mIntakeSubsystem.ejectCoralCommand());
     mDriverController.povUp().onTrue(mClimberSubsystem.setStateCommand(Relay.Value.kForward));
     mDriverController.povDown().onTrue(mClimberSubsystem.setStateCommand(Relay.Value.kReverse));
     // Toggles between Resting Position(Approximately 89 degrees) and Intake Position(approximately 35 degrees)
-    mDriverController.rightBumper().whileTrue(new ConditionalCommand(mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(35)), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(87.9)), mCoralArmSubsystem::getIfAtRestingPosition));
+    mDriverController.rightBumper().whileTrue(new ConditionalCommand(mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(35)), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(87.9)), mCoralArmSubsystem::getAtRestingPosition));
     mDriverController.leftBumper().whileTrue(new ConditionalCommand(mElevatorSubsystem.moveToHeightCommand(Units.Inches.of(Constants.ELEVATOR_RESTING_POSITION_INCHES)), mElevatorSubsystem.moveToHeightCommand(Units.Inches.of(Constants.ELEVATOR_INTAKE_POSITION_INCHES)), mElevatorSubsystem::atIntakePosition));
     // Trigger toggleCoral = new Trigger(,() -> mElevatorSubsystem.atBottom());
     // mDriverController.rightBumper().toggleOnTrue(mElevatorSubsystem.moveToHeightCommand());
