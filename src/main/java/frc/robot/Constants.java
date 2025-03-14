@@ -80,4 +80,5 @@ public final class Constants {
   // Path Planner PID constants
   public static final PIDConstants PATH_FOLLOWING_PID_CONSTANTS_POSITIONAL = new PIDConstants(5.1275, 0.755);
   public static final PIDConstants PATH_FOLLOWING_PID_CONSTANTS_ROTATIONAL = new PIDConstants(1.985);
+  public static final double ELEVATOR_INTAKE_POSITION_INCHES = 20;
 }

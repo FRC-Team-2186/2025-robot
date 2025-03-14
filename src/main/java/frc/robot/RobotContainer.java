@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -88,21 +89,22 @@ public class RobotContainer {
     // mOperatorController.y().whileTrue(mElevatorSubsystem.moveToHeightCommand(Constants.CORAL_HEIGHT_L4));
     // mOperatorController.x().whileTrue(mElevatorSubsystem.homeCommand());
 
-    mDriverController.a().whileTrue(mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(0.0)));
-    mDriverController.b().whileTrue(mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(45.0)));
-    mOperatorController.x().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.RESTING_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(35))));
-    mOperatorController.a().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L2_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(35))));
-    mOperatorController.b().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L3_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(35))));
-    mOperatorController.y().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L4_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(170))));
+    // mDriverController.a().whileTrue(mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(0.0)));
+    // mDriverController.b().whileTrue(mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(45.0)));
+    mOperatorController.x().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.RESTING_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-35))));
+    mOperatorController.a().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L2_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-35))));
+    mOperatorController.b().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L3_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-35))));
+    mOperatorController.y().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L4_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-170))));
 
 
     mDriverController.rightTrigger().whileTrue(mCoralArmSubsystem.setCoralIntakeSpeedCommand(() -> mOperatorController.getRightTriggerAxis()));
     mDriverController.leftTrigger().whileTrue(mCoralArmSubsystem.setCoralIntakeSpeedCommand(() -> mOperatorController.getRightTriggerAxis() * -1));
     mDriverController.povUp().onTrue(mClimberSubsystem.setStateCommand(Relay.Value.kForward));
     mDriverController.povDown().onTrue(mClimberSubsystem.setStateCommand(Relay.Value.kReverse));
-
+    // Toggles between Resting Position(Approximately 89 degrees) and Intake Position(approximately 35 degrees)
+    mDriverController.rightBumper().whileTrue(new ConditionalCommand(mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(35)), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(87.9)), mCoralArmSubsystem::getIfAtRestingPosition));
+    mDriverController.leftBumper().whileTrue(new ConditionalCommand(mElevatorSubsystem.moveToHeightCommand(Units.Inches.of(Constants.ELEVATOR_RESTING_POSITION_INCHES)), mElevatorSubsystem.moveToHeightCommand(Units.Inches.of(Constants.ELEVATOR_INTAKE_POSITION_INCHES)), mElevatorSubsystem::atIntakePosition));
     // Trigger toggleCoral = new Trigger(,() -> mElevatorSubsystem.atBottom());
-    // FIXME Should toggle between elevator positions only if elevator is at resting position
     // mDriverController.rightBumper().toggleOnTrue(mElevatorSubsystem.moveToHeightCommand());
   }
 

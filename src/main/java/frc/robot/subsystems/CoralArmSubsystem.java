@@ -98,6 +98,9 @@ public class CoralArmSubsystem extends SubsystemBase {
   public double getArmPositionDegrees() {
     return getArmPosition().in(Units.Degrees);
   }
+  public boolean getIfAtRestingPosition(){
+    return getArmPosition() == Units.Degrees.of(87.9);
+  }
 
   public double getArmPositionRotations() {
     return getArmPosition().in(Units.Rotations);
