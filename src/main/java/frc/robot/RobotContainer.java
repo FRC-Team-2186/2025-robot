@@ -16,12 +16,18 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.ImmutableAngle;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 /**
@@ -43,7 +49,7 @@ public class RobotContainer {
   private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
   private final ClimberSubsystem mClimberSubsystem = new ClimberSubsystem();
   private final ElevatorSubsystem mElevatorSubsystem = new ElevatorSubsystem();
-  private final CoralArmSubsystem mArmSubsystem = new CoralArmSubsystem();
+  private final CoralArmSubsystem mCoralArmSubsystem = new CoralArmSubsystem();
   private final CoralIntakeSubsystem mIntakeSubsystem = new CoralIntakeSubsystem();
 
   private final SendableChooser<Command> mCommandChooser;
@@ -69,9 +75,10 @@ public class RobotContainer {
     mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(mDriveAngularVelocity));
     mClimberSubsystem.setDefaultCommand(mClimberSubsystem.stopCommand());
     mElevatorSubsystem.setDefaultCommand(mElevatorSubsystem.directCommand(() -> 0.0));
+    mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(mDriveFieldOriented));
     mIntakeSubsystem.setDefaultCommand(mIntakeSubsystem.handleCoralCommand(() -> 0.0));
-    mArmSubsystem.setDefaultCommand(
-        mArmSubsystem.moveCoralArmCommand(() -> MathUtil.applyDeadband(mOperatorController.getRightY(), 0.15) * 0.25));
+    mCoralArmSubsystem.setDefaultCommand(
+      mCoralArmSubsystem.moveCoralArmCommand(() -> MathUtil.applyDeadband(mOperatorController.getRightY(), 0.15) * 0.25));
 
     mDriverController.leftTrigger(0.25).whileTrue(mIntakeSubsystem.ejectCoralCommand());
     mDriverController.rightTrigger(0.25).whileTrue(mIntakeSubsystem.intakeCoralCommand());
@@ -81,8 +88,22 @@ public class RobotContainer {
     // mOperatorController.y().whileTrue(mElevatorSubsystem.moveToHeightCommand(Constants.CORAL_HEIGHT_L4));
     // mOperatorController.x().whileTrue(mElevatorSubsystem.homeCommand());
 
-    mDriverController.a().whileTrue(mArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(0.0)));
-    mDriverController.b().whileTrue(mArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(45.0)));
+    mDriverController.a().whileTrue(mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(0.0)));
+    mDriverController.b().whileTrue(mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(45.0)));
+    mOperatorController.x().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.RESTING_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(new ImmutableAngle(35, 0.610865, Units.Degrees))));
+    mOperatorController.a().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L2_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(new ImmutableAngle(35, 0.610865, Units.Degrees))));
+    mOperatorController.b().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L3_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(new ImmutableAngle(35, 0.610865, Units.Degrees))));
+    mOperatorController.y().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L4_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(new ImmutableAngle(170, 2.96706, Units.Degrees))));
+
+
+    mDriverController.rightTrigger().whileTrue(mCoralArmSubsystem.setCoralIntakeSpeedCommand(() -> mOperatorController.getRightTriggerAxis()));
+    mDriverController.leftTrigger().whileTrue(mCoralArmSubsystem.setCoralIntakeSpeedCommand(() -> mOperatorController.getRightTriggerAxis() * -1));
+    mDriverController.povUp().onTrue(mClimberSubsystem.setStateCommand(Relay.Value.kForward));
+    mDriverController.povDown().onTrue(mClimberSubsystem.setStateCommand(Relay.Value.kReverse));
+
+    // Trigger toggleCoral = new Trigger(,() -> mElevatorSubsystem.atBottom());
+    // FIXME Should toggle between elevator positions only if elevator is at resting position
+    // mDriverController.rightBumper().toggleOnTrue(mElevatorSubsystem.moveToHeightCommand());
   }
 
   /**
