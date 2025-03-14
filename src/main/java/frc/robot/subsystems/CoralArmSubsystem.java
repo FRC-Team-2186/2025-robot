@@ -15,8 +15,10 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.AngularAccelerationUnit;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -35,8 +37,9 @@ import frc.robot.Constants;
 public class CoralArmSubsystem extends SubsystemBase {
   /** SETTING UP CLASS VARIABLES */
 
-  private static final AngleUnit POSITION_UNIT = Units.Degrees;
-  private static final AngularVelocityUnit VELOCITY_UNIT = Units.DegreesPerSecond;
+  private static final AngleUnit POSITION_UNIT = Units.Radians;
+  private static final AngularVelocityUnit VELOCITY_UNIT = Units.RadiansPerSecond;
+  private static final AngularAccelerationUnit ACCELERATION_UNIT = Units.RadiansPerSecondPerSecond;
 
   // Coral Motors
   private final SparkMax mCoralArmMotor = new SparkMax(Constants.CORAL_ARM_MOTOR_CAN_ID,
@@ -44,28 +47,31 @@ public class CoralArmSubsystem extends SubsystemBase {
   private final SparkMax mCoralArmIntakeMotor = new SparkMax(Constants.CORAL_INTAKE_MOTOR_CAN_ID, MotorType.kBrushless);
 
   // Coral feedforward obj
-  // initializing feedforward TODO: fill out
-  private final ArmFeedforward mCoralArmFeedforward = new ArmFeedforward(0, 0, 0);
+  private final ArmFeedforward mCoralArmFeedforward = new ArmFeedforward(0, 0.69, 0.2325, 1);
 
   // Coral arm encoder
   private final SparkAbsoluteEncoder mEncoder;
 
+  // private final MedianFilter mEncoderFilter = new MedianFilter(1 << 7);
+
   // pid for coral arm
-  private final ProfiledPIDController mCoralPidController = new ProfiledPIDController(0.0, 0.0, 0.0,
-      new Constraints(Constants.CORAL_MAX_VELOCITY_RADIANS_PER_SECOND, Constants.CORAL_MAX_ACCELERATION));
+  // kP = 4.875 kI = 0.25 kD - 0.4
+  private final ProfiledPIDController mCoralPidController = new ProfiledPIDController(2.0675, 0, 0,
+      new Constraints(Constants.CORAL_ARM_MAX_VELOCITY.in(VELOCITY_UNIT),
+          Constants.CORAL_ARM_MAX_ACCELERATION.in(Units.DegreesPerSecondPerSecond)));
 
   // SysId routine to model the behavior of our coral arm subsystem
   private final SysIdRoutine mCoralArmSysIdRoutine;
-
-  // configuration obj to configure the motor controller
-  SparkFlexConfig config = new SparkFlexConfig();
 
   /* END CLASS VARIABLES */
 
   // constructor
   public CoralArmSubsystem() {
     var sparkConfig = new SparkMaxConfig();
-    sparkConfig.idleMode(IdleMode.kBrake);
+    sparkConfig.idleMode(IdleMode.kBrake).inverted(true);
+    sparkConfig.absoluteEncoder.positionConversionFactor(1.0).velocityConversionFactor(1.0).inverted(true)
+        .averageDepth(128);
+    sparkConfig.limitSwitch.forwardLimitSwitchEnabled(false).reverseLimitSwitchEnabled(false);
 
     mCoralArmMotor.configure(sparkConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     mEncoder = mCoralArmMotor.getAbsoluteEncoder();
@@ -75,17 +81,30 @@ public class CoralArmSubsystem extends SubsystemBase {
         new SysIdRoutine.Mechanism(volts -> {
           mCoralArmMotor.setVoltage(volts);
         }, this::handleSysIdLog, this));
+
+    mCoralPidController.setTolerance(Units.Degrees.of(0.5).in(POSITION_UNIT));
   }
 
   /* ENCODER FUNCTIONS */
 
   // gets position of encoder/arm in rotations -> returned as an Angle obj
   public Angle getArmPosition() {
-    return Units.Rotations.of(mEncoder.getPosition());
+    var degreesUnadjusted = mEncoder.getPosition() * 360.0;
+    var degrees = ((degreesUnadjusted + 180.0) % 360.0) - 180.0;
+
+    return Units.Degrees.of(degrees);
   }
 
   public double getArmPositionDegrees() {
     return getArmPosition().in(Units.Degrees);
+  }
+
+  public double getArmPositionRotations() {
+    return getArmPosition().in(Units.Rotations);
+  }
+
+  public double getArmPositionRadians() {
+    return getArmPosition().in(Units.Radians);
   }
 
   // angular velocity of the arm
@@ -98,16 +117,32 @@ public class CoralArmSubsystem extends SubsystemBase {
     return getArmVelocity().in(Units.DegreesPerSecond);
   }
 
+  public double getArmVelocityRadiansPerSecond() {
+    return getArmVelocity().in(Units.RadiansPerSecond);
+  }
+
+  public double getMotorVoltage() {
+    return mCoralArmMotor.getAppliedOutput() * mCoralArmMotor.getBusVoltage();
+  }
+
+  public double getDesiredPosition() {
+    return mCoralPidController.getSetpoint().position;
+  }
+
+  public double getDesiredVelocity() {
+    return mCoralPidController.getSetpoint().velocity;
+  }
+
   // execute command with PID based on the goal angle set (radians)
   private void executeWithPid() {
-    var pidOutput = mCoralPidController.calculate(getArmPosition().in(POSITION_UNIT));
+    var pidOutput = mCoralPidController.calculate(getArmPosition().in(Units.Radians));
     var feedforward = mCoralArmFeedforward.calculate(mCoralPidController.getSetpoint().position,
         mCoralPidController.getSetpoint().velocity);
 
     SmartDashboard.putNumber("PID Output", pidOutput);
     SmartDashboard.putNumber("FeedForward", feedforward);
 
-    var motorOutput = (pidOutput * RobotController.getBatteryVoltage()) + feedforward;
+    var motorOutput = pidOutput + feedforward;
 
     mCoralArmMotor.setVoltage(motorOutput);
   }
@@ -160,7 +195,7 @@ public class CoralArmSubsystem extends SubsystemBase {
   // teleop command to move Arm up and down
   public Command moveCoralArmCommand(DoubleSupplier pSource) {
     return run(() -> {
-      mCoralArmMotor.set(pSource.getAsDouble() * 0.25);
+      mCoralArmMotor.set(pSource.getAsDouble());
     });
   }
 
@@ -175,7 +210,7 @@ public class CoralArmSubsystem extends SubsystemBase {
       pidBegin(pDesiredPosition);
     }, () -> {
       executeWithPid();
-    }).until(mCoralPidController::atGoal).finallyDo(this::pidEnd);
+    }).finallyDo(this::pidEnd);
   }
 
   /* END COMMANDS */

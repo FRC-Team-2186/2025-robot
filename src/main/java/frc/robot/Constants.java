@@ -6,12 +6,12 @@ package frc.robot;
 
 import com.pathplanner.lib.config.PIDConstants;
 
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.Per;
+import edu.wpi.first.units.measure.LinearAcceleration;
+import edu.wpi.first.units.measure.LinearVelocity;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -28,16 +28,12 @@ import edu.wpi.first.units.measure.Per;
 public final class Constants {
 
   // Elevator Motor Constants
-  public static final int LEFT_ELEVATOR_MOTOR_CAN_ID = 22; // TODO: FILL OUT!!!
-  public static final int RIGHT_ELEVATOR_MOTOR_CAN_ID = 29; // TODO: FILL OUT!!!
+  public static final int LEFT_ELEVATOR_MOTOR_CAN_ID = 22;
+  public static final int RIGHT_ELEVATOR_MOTOR_CAN_ID = 29;
 
   // Elevator Limit Switch Constants
-  public static final int TOP_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = 1; // TODO: FILL OUT!!!
-  public static final int BOTTOM_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = 0; // TODO: FILL OUT!!!
-
-  // Elevator Encoder Constants
-  public static final int ELEVATOR_ABSOLUTE_ENCODER_OFFSET = 0; // TODO: FILL OUT!!!
-  public static final double ELEVATOR_MAX_SAFE_POSITION_INCHES = 0; // TODO: FILL OUT!!!
+  public static final int TOP_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = 1;
+  public static final int BOTTOM_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = 0;
 
   // Coral Reef Level Constants
   // where we want the bottom of coral payload to be at each reef level
@@ -56,8 +52,8 @@ public final class Constants {
   public static final Distance ELEVATOR_SPROCKET_RADIUS = Units.Inches.of(1.0);
   public static final Distance ELEVATOR_SPROCKET_DIAMETER = Units.Inches.of(2.0);
   public static final double ELEVATOR_MOTOR_GEAR_RATIO = 1.0 / 20.0;
-  public static final double ELEVATOR_MAX_VELOCITY_METERS_PER_SECOND = 0.75;
-  public static final double ELEVATOR_MAX_ACCELERATION = 0.25;
+  public static final LinearVelocity ELEVATOR_MAX_VELOCITY = Units.Inches.of(75.0).per(Units.Second);
+  public static final LinearAcceleration ELEVATOR_MAX_ACCELERATION = Units.InchesPerSecond.of(50.0).per(Units.Second);
 
   // CLIMBER CONSTANTS
   public static final int CLIMBER_RELAY_PORT_ID = 0;
@@ -67,13 +63,9 @@ public final class Constants {
   }
 
   // CORAL ARM SUBSYSTEM CONSTANTS
-  public static final int CORAL_ARM_MOTOR_CAN_ID = 0; // TODO: FILL OUT!!!
-  public static final double CORAL_ARM_ABSOLUTE_ENCODER_OFFSET = 0; // TODO: FILL OUT!!!
-  public static final int BOTTOM_CORAL_LIMIT_SWITCH_DIO_CHANNEL = 0; // TODO: FILL OUT!!!
-  public static final int TOP_CORAL_LIMIT_SWITCH_DIO_CHANNEL = 0; // TODO: FILL OUT!!!
-  public static final double CORAL_ARM_MAX_SAFE_ANGLE_DEGREES = 0.0; // TODO FILL OUT!!!
-  public static final double CORAL_MAX_VELOCITY_RADIANS_PER_SECOND = 0.0;
-  public static final double CORAL_MAX_ACCELERATION = 0.0;
+  public static final int CORAL_ARM_MOTOR_CAN_ID = 20;
+  public static final AngularVelocity CORAL_ARM_MAX_VELOCITY = Units.DegreesPerSecond.of(90.0);
+  public static final AngularAcceleration CORAL_ARM_MAX_ACCELERATION = Units.DegreesPerSecondPerSecond.of(45.0);
 
   // CORAL INTAKE SUBSYSTEM CONSTANTS
   public static final int CORAL_INTAKE_MOTOR_CAN_ID = 25;
