@@ -91,7 +91,7 @@ public class RobotContainer {
 
     // mDriverController.a().whileTrue(mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(0.0)));
     // mDriverController.b().whileTrue(mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(45.0)));
-    mOperatorController.x().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.RESTING_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-35))));
+    mOperatorController.x().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.RESTING_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-87.9))));
     mOperatorController.a().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L2_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-35))));
     mOperatorController.b().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L3_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-35))));
     mOperatorController.y().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L4_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-170))));
