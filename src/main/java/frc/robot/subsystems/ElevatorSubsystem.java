@@ -127,7 +127,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean atBottom() {
-    return mBottomLimitSwitch.get();
+    return !mBottomLimitSwitch.get();
   }
 
   public boolean atTop() {
