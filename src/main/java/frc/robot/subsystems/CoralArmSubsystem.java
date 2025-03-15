@@ -81,7 +81,7 @@ public class CoralArmSubsystem extends SubsystemBase {
           mCoralArmMotor.setVoltage(volts);
         }, this::handleSysIdLog, this));
 
-    mCoralPidController.setTolerance(Units.Degrees.of(0.5).in(POSITION_UNIT));
+    mCoralPidController.setTolerance(Units.Degrees.of(2.5).in(POSITION_UNIT));
   }
 
   /* ENCODER FUNCTIONS */
@@ -98,7 +98,7 @@ public class CoralArmSubsystem extends SubsystemBase {
     return getArmPosition().in(Units.Degrees);
   }
   public boolean getAtRestingPosition(){
-    return getArmPosition() == Units.Degrees.of(87.9);
+    return getArmPositionDegrees() >= 84 && getArmPositionDegrees() <= 88;
   }
 
   public double getArmPositionRotations() {

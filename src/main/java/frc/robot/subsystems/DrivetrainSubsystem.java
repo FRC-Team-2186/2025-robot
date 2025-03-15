@@ -28,6 +28,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -43,7 +44,7 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 @Logged
 public class DrivetrainSubsystem extends SubsystemBase {
-  private static final LinearVelocity MAX_SPEED = FeetPerSecond.of(5);
+  private static final LinearVelocity MAX_SPEED = FeetPerSecond.of(10);
 
   private static final boolean PATHPLANNER_ENABLE_FEEDFORWARD = true;
 
@@ -157,6 +158,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public Command driveFieldOriented(Supplier<ChassisSpeeds> pSpeedsSupplier) {
     return run(() -> {
       mSwerveDrive.driveFieldOriented(pSpeedsSupplier.get());
+    });
+  }
+
+  public Command driveRobotOriented(Supplier<ChassisSpeeds> pSpeeds) {
+    return run(() -> {
+      mSwerveDrive.drive(pSpeeds.get());
     });
   }
 

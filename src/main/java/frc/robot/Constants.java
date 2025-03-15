@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
@@ -46,6 +47,21 @@ public final class Constants {
   public static final Distance L4_CORAL_INCHES = Units.Inches.of(52.74); // TODO: ROUGH ESTIMATE -
                                                                                            // CONFIRM !!!
 
+  // Coral Arm Angle Constants
+  // Where we want the coral angle to be for each level
+
+  public static final Angle RESTING_CORAL_ANGLE = Units.Degrees.of(-87.9);
+  public static final Angle CORAL_RESTING_ANGLE_UP = Units.Degrees.of(87.9);
+  public static final Angle CORAL_INTAKE_ANGLE = Units.Degrees.of(35.0);
+
+  public static final Angle L2_CORAL_ANGLE = Units.Degrees.of(-36);
+
+  public static final Angle L3_CORAL_ANGLE = Units.Degrees.of(-36);
+
+  public static final Angle L4_CORAL_ANGLE = Units.Degrees.of(-12);
+
+  public static final Angle INTAKE_ANGLE = Units.Degrees.of(-18);
+
   // ELEVATOR CONSTANTS
   // this is measured from bottom of coral payload to ground
   public static final double ELEVATOR_RESTING_POSITION_INCHES = 0; // TODO: FILL OUT!!!
@@ -80,5 +96,7 @@ public final class Constants {
   // Path Planner PID constants
   public static final PIDConstants PATH_FOLLOWING_PID_CONSTANTS_POSITIONAL = new PIDConstants(5.1275, 0.755);
   public static final PIDConstants PATH_FOLLOWING_PID_CONSTANTS_ROTATIONAL = new PIDConstants(1.985);
+
+  public static final Distance ELEVATOR_INTAKE_POSITION = Units.Inches.of(20);
   public static final double ELEVATOR_INTAKE_POSITION_INCHES = 20;
 }

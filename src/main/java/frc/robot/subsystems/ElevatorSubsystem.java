@@ -103,7 +103,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     return Units.Inches.of(inches);
   }
   public boolean atIntakePosition(){
-    return getPosition() == Units.Inches.of(Constants.ELEVATOR_INTAKE_POSITION_INCHES);
+    // return getPosition() == Units.Inches.of(Constants.ELEVATOR_INTAKE_POSITION_INCHES);
+    return getPosition().isNear(Units.Inches.of(Constants.ELEVATOR_INTAKE_POSITION_INCHES), 0.05);
   }
 
   public LinearVelocity getVelocity() {

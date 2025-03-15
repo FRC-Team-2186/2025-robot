@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.0826771881620765,
-        "y": 4.087454482256356
+        "x": 7.095,
+        "y": 6.225
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.332115307355477,
-        "y": 4.104206338668675
+        "x": 6.095000000000001,
+        "y": 6.225
       },
       "isLocked": false,
-      "linkedName": "Middle Starting Position"
+      "linkedName": "Left Starting Position"
     },
     {
       "anchor": {
-        "x": 6.1516855071236725,
-        "y": 4.1125
+        "x": 5.2350852272727275,
+        "y": 6.225
       },
       "prevControl": {
-        "x": 6.485939806004494,
-        "y": 4.081199815470195
+        "x": 6.2350852272727275,
+        "y": 6.225
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "East Reef (Left)"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -45,7 +45,7 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Middle",
+  "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
