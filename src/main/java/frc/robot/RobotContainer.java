@@ -64,8 +64,8 @@ public class RobotContainer {
   private final SendableChooser<Command> mCommandChooser;
 
   SwerveInputStream mDriveAngularVelocity = SwerveInputStream.of(mDrivetrainSubsystem.getSwerveDrive(),
-      () -> mDriverController.getLeftY() * -1,
-      () -> mDriverController.getLeftX() * -1)
+      () -> mDriverController.getLeftX(),
+      () -> mDriverController.getLeftY())
       .withControllerRotationAxis(mDriverController::getRightX)
       .deadband(0.1)
       .scaleTranslation(0.8)
@@ -93,7 +93,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Zero Gyro", new InstantCommand(() -> mDrivetrainSubsystem.zeroGyroWithAlliance()));
     SmartDashboard.putData("Autonomous", mCommandChooser);
 
-    mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(mDriveAngularVelocity));
+    mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(mDriveFieldOriented));
     mClimberSubsystem.setDefaultCommand(mClimberSubsystem.stopCommand());
     mElevatorSubsystem.setDefaultCommand(mElevatorSubsystem.directCommand(() -> mOperatorController.getLeftY() * 0.5));
     mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(mDriveFieldOriented));
@@ -111,17 +111,20 @@ public class RobotContainer {
 
     // mDriverController.a().whileTrue(mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(0.0)));
     // mDriverController.b().whileTrue(mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(45.0)));
-    mOperatorController.x().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.RESTING_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-87.9))));
-    mOperatorController.a().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L2_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-35))));
-    mOperatorController.b().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L3_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-35))));
-    mOperatorController.y().onTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L4_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-170))));
+    mOperatorController.x().whileTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.RESTING_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-87.9))));
+    mOperatorController.a().whileTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L2_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-36))));
+    mOperatorController.b().whileTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L3_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-36))));
+    mOperatorController.y().whileTrue(new ParallelCommandGroup(mElevatorSubsystem.moveToHeightCommand(Constants.L4_CORAL_INCHES), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(-12))));
 
     mDriverController.a().onTrue(new InstantCommand(() -> mDrivetrainSubsystem.zeroGyroWithAlliance()));
+    mOperatorController.rightStick().whileTrue(mElevatorSubsystem.directCommand(() -> mOperatorController.getRightY()));
+    mOperatorController.leftStick().whileTrue(mCoralArmSubsystem.moveCoralArmCommand(() -> mOperatorController.getLeftX()));
 
-    mDriverController.rightTrigger().whileTrue(mIntakeSubsystem.intakeCoralCommand());
-    mDriverController.leftTrigger().whileTrue(mIntakeSubsystem.ejectCoralCommand());
-    mDriverController.povUp().whileTrue(mClimberSubsystem.setStateCommand(Relay.Value.kForward));
-    mDriverController.povDown().whileTrue(mClimberSubsystem.setStateCommand(Relay.Value.kReverse));
+    
+    mDriverController.leftTrigger().whileTrue(mIntakeSubsystem.intakeCoralCommand());
+    mDriverController.rightTrigger().whileTrue(mIntakeSubsystem.ejectCoralCommand());
+    mDriverController.povDown().whileTrue(mClimberSubsystem.setStateCommand(Relay.Value.kForward));
+    mDriverController.povUp().whileTrue(mClimberSubsystem.setStateCommand(Relay.Value.kReverse));
     // Toggles between Resting Position(Approximately 89 degrees) and Intake Position(approximately 35 degrees)
     mDriverController.rightBumper().whileTrue(new ConditionalCommand(mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(35)), mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(87.9)), mCoralArmSubsystem::getAtRestingPosition));
     mDriverController.leftBumper().whileTrue(new ConditionalCommand(mElevatorSubsystem.moveToHeightCommand(Units.Inches.of(Constants.ELEVATOR_RESTING_POSITION_INCHES)), mElevatorSubsystem.moveToHeightCommand(Units.Inches.of(Constants.ELEVATOR_INTAKE_POSITION_INCHES)), mElevatorSubsystem::atIntakePosition));
