@@ -90,6 +90,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("drop_coral", mIntakeSubsystem.ejectCoralCommand());
     NamedCommands.registerCommand("elevator_to_bottom", mElevatorSubsystem.homeCommand());
     NamedCommands.registerCommand("await_coral", new SequentialCommandGroup(mIntakeSubsystem.intakeCoralCommand().until(mIntakeSubsystem::hasCoral),  mIntakeSubsystem.intakeCoralCommand().withTimeout(0.25)));
+    NamedCommands.registerCommand("Zero Gyro", new InstantCommand(() -> mDrivetrainSubsystem.zeroGyroWithAlliance()));
     SmartDashboard.putData("Autonomous", mCommandChooser);
 
     mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(mDriveAngularVelocity));
