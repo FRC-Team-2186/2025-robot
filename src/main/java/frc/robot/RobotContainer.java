@@ -26,6 +26,7 @@ import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.ImmutableAngle;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -40,7 +41,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
-/**
+/**P
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic
  * should actually be handled in the {@link Robot}
@@ -59,8 +60,8 @@ public class RobotContainer {
   private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
   private final ClimberSubsystem mClimberSubsystem = new ClimberSubsystem();
   // private final ElevatorSubsystem mElevatorSubsystem = new ElevatorSubsystem();
-  private final CoralArmSubsystem mCoralArmSubsystem = new CoralArmSubsystem();
-  private final CoralIntakeSubsystem mIntakeSubsystem = new CoralIntakeSubsystem();
+  // private final CoralArmSubsystem mCoralArmSubsystem = new CoralArmSubsystem();
+  // private final CoralIntakeSubsystem mIntakeSubsystem = new CoralIntakeSubsystem();
 
   private final SendableChooser<Command> mCommandChooser;
 
@@ -99,7 +100,7 @@ public class RobotContainer {
     // // NamedCommands.registerCommand("elevator_to_bottom", gotoRestingPositionCommand);
     // NamedCommands.registerCommand("await_coral", awaitCoralCommand);
     // NamedCommands.registerCommand("Zero Gyro", new InstantCommand(() -> mDrivetrainSubsystem.zeroGyroWithAlliance()));
-    // SmartDashboard.putData("Autonomous", mCommandChooser);
+    SmartDashboard.putData("Autonomous", mCommandChooser);
 
     // mClimberSubsystem.setDefaultCommand(mClimberSubsystem.stopCommand());
     // mElevatorSubsystem.setDefaultCommand(mElevatorSubsystem.directCommand(() -> 0.0));
@@ -159,7 +160,11 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    // return new InstantCommand(() -> mDrivetrainSubsystem.driveFieldOriented())
     return new DriveTwoMeters(mDrivetrainSubsystem);
     // return mCommandChooser.getSelected();
+  }
+  public CommandXboxController getDriverController(){
+    return mDriverController;
   }
 }
