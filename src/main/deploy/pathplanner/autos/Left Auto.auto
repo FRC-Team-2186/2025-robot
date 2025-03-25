@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Middle Starting Position to East Reef (Left)"
+            "pathName": "Left Auto"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DrivetrainStop"
           }
         }
       ]

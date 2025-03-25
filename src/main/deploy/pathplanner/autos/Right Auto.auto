@@ -5,9 +5,15 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "Right Auto"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "DriveTwoMeters"
+            "name": "DrivetrainStop"
           }
         }
       ]

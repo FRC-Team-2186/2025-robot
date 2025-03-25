@@ -5,10 +5,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import swervelib.SwerveDrive;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DriveTwoMeters extends Command {
@@ -33,7 +33,10 @@ public class DriveTwoMeters extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    mSwerveDrive.getSwerveDrive().driveFieldOriented(new ChassisSpeeds(2, 0, 0));
+      mSwerveDrive.getSwerveDrive().drive(new ChassisSpeeds(2, 0, 0));
+    // else {
+    // mSwerveDrive.getSwerveDrive().drive(new ChassisSpeeds(-3, 0, 0));
+    // }
     // System.out.println(initial + "time running");
   }
 
@@ -41,18 +44,18 @@ public class DriveTwoMeters extends Command {
   @Override
   public void end(boolean interrupted) {
     // !!!SID!!! - do we need to stop when the command ends or let it coast?
-    // mSwerveDrive.getSwerveDrive().driveFieldOriented(new ChassisSpeeds(0, 0, 0));
+    mSwerveDrive.getSwerveDrive().driveFieldOriented(new ChassisSpeeds(0, 0, 0));
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     // System.out.println("In is finished");
-    if(initial.get() > 1){
-      System.out.println("Out of is finished command end");
-      System.out.println(initial.get());
-      System.out.println(Timer.getFPGATimestamp() - initial.get());
-      System.out.println(Timer.getFPGATimestamp());
+    if(initial.get() > 3){
+      // System.out.println("Out of is finished command end");
+      // System.out.println(initial.get());
+      // System.out.println(Timer.getFPGATimestamp() - initial.get());
+      // System.out.println(Timer.getFPGATimestamp());
       return true;
     }
     return false;
