@@ -6,7 +6,7 @@
   },
   "absoluteEncoderOffset": -235.482,
   "drive": {
-    "type": "falcon",
+    "type": "krakenx60",
     "id": 8,
     "canbus": null
   },
