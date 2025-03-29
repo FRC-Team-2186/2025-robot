@@ -68,8 +68,8 @@ public class RobotContainer {
   private final SendableChooser<Command> mCommandChooser;
 
   SwerveInputStream mDriveFieldOriented = SwerveInputStream.of(mDrivetrainSubsystem.getSwerveDrive(),
-      () -> mDriverController.getLeftX() * -1,
-      () -> mDriverController.getLeftY())
+      () -> mDriverController.getLeftY() * -1,
+      () -> mDriverController.getLeftX())
       .withControllerRotationAxis(mDriverController::getRightX)
       .deadband(0.1)
       .scaleTranslation(1.0)
@@ -117,8 +117,16 @@ public class RobotContainer {
     // NamedCommands.registerCommand("Zero Gyro", new InstantCommand(() -> mDrivetrainSubsystem.zeroGyroWithAlliance()));
     SmartDashboard.putData("Autonomous", mCommandChooser);
 
+    Command driveFieldOrientedDirectAngle = mDrivetrainSubsystem.driveCommand(
+      () -> MathUtil.applyDeadband(mDriverController.getLeftY(), 0.1),
+      () -> -MathUtil.applyDeadband(mDriverController.getLeftX(), 0.1),
+      () -> mDriverController.getRightX());
+      
+    // mDrivetrainSubsystem.setDefaultCommand(driveFieldOrientedDirectAngle);
+
     // mClimberSubsystem.setDefaultCommand(mClimberSubsystem.stopCommand());
     // mElevatorSubsystem.setDefaultCommand(mElevatorSubsystem.directCommand(() -> 0.0));
+    // mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveRobotOriented(mDriveRobotOriented));
     mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(mDriveFieldOriented));
     // mIntakeSubsystem.setDefaultCommand(mIntakeSubsystem.handleCoralCommand(() -> 0.0));
     // mCoralArmSubsystem.setDefaultCommand(

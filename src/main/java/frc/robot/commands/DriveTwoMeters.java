@@ -27,13 +27,14 @@ public class DriveTwoMeters extends Command {
   @Override
   public void initialize() {
     initial.start();
+    mSwerveDrive.zeroGyro();
     System.out.println(initial);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      mSwerveDrive.getSwerveDrive().drive(new ChassisSpeeds(2, 0, 0));
+      mSwerveDrive.getSwerveDrive().drive(new ChassisSpeeds(0, 1, 0));
     // else {
     // mSwerveDrive.getSwerveDrive().drive(new ChassisSpeeds(-3, 0, 0));
     // }

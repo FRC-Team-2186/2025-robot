@@ -160,6 +160,30 @@ public class DrivetrainSubsystem extends SubsystemBase {
       mSwerveDrive.driveFieldOriented(pSpeedsSupplier.get());
     });
   }
+  public void driveFieldOriented(ChassisSpeeds velocity)
+  {
+    mSwerveDrive.driveFieldOriented(velocity);
+  }
+
+
+  public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
+                              DoubleSupplier headingY)
+  {
+    // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
+    return run(() -> {
+
+      Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(),
+                                                                                 translationY.getAsDouble()), 0.8);
+
+      // Make the robot move
+      driveFieldOriented(mSwerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(), scaledInputs.getY(),
+                                                                      headingX.getAsDouble(),
+                                                                      headingY.getAsDouble(),
+                                                                      mSwerveDrive.getOdometryHeading().getRadians(),
+                                                                      mSwerveDrive.getMaximumChassisVelocity()));
+    });
+  }
+  
 
   public Command driveRobotOriented(Supplier<ChassisSpeeds> pSpeeds) {
     return run(() -> {
