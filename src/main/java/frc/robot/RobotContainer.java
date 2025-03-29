@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveTwoMeters;
+import frc.robot.commands.DrivetoReefAuto;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CoralArmSubsystem;
@@ -185,8 +186,11 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // return new InstantCommand(() -> mDrivetrainSubsystem.driveFieldOriented())
     return new DriveTwoMeters(mDrivetrainSubsystem).andThen(() -> mDrivetrainSubsystem.zeroGyroWithAlliance());
-    // return new WaitCommand(15);
+    // return new WaitCommand(15);`
     // return mCommandChooser.getSelected();
+
+    // Fancy Auto
+    // return new DrivetoReefAuto(mDrivetrainSubsystem, 0, 0).andThen(mElevatorSubsystem.moveToHeightCommand(Constants.RESTING_CORAL_INCHES)).andThen(mCoralSubsystem.ejectCoralCommand());
   }
   public CommandXboxController getDriverController(){
     return mDriverController;
