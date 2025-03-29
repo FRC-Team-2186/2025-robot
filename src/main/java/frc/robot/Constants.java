@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
@@ -37,10 +38,29 @@ public final class Constants {
 
   // Coral Reef Level Constants
   // where we want the bottom of coral payload to be at each reef level
-  // TODO: Measure these for real
-  public static final Distance CORAL_HEIGHT_L2 = Units.Inches.of(21.0);
-  public static final Distance CORAL_HEIGHT_L3 = Units.Inches.of(36.0);
-  public static final Distance CORAL_HEIGHT_L4 = Units.Inches.of(48.0);
+  public static final Distance RESTING_CORAL_INCHES = Units.Inches.of(0);
+
+  public static final Distance L2_CORAL_INCHES = Units.Inches.of(10.11); // TODO: ROUGH ESTIMATE -
+                                                                                           // CONFIRM !!!
+  public static final Distance L3_CORAL_INCHES = Units.Inches.of(29.73); // TODO: ROUGH ESTIMATE -
+                                                                                           // CONFIRM !!!
+  public static final Distance L4_CORAL_INCHES = Units.Inches.of(52.74); // TODO: ROUGH ESTIMATE -
+                                                                                           // CONFIRM !!!
+
+  // Coral Arm Angle Constants
+  // Where we want the coral angle to be for each level
+
+  public static final Angle RESTING_CORAL_ANGLE = Units.Degrees.of(-87.9);
+  public static final Angle CORAL_RESTING_ANGLE_UP = Units.Degrees.of(87.9);
+  public static final Angle CORAL_INTAKE_ANGLE = Units.Degrees.of(35.0);
+
+  public static final Angle L2_CORAL_ANGLE = Units.Degrees.of(-36);
+
+  public static final Angle L3_CORAL_ANGLE = Units.Degrees.of(-36);
+
+  public static final Angle L4_CORAL_ANGLE = Units.Degrees.of(-12);
+
+  public static final Angle INTAKE_ANGLE = Units.Degrees.of(-18);
 
   // ELEVATOR CONSTANTS
   // this is measured from bottom of coral payload to ground
@@ -65,6 +85,8 @@ public final class Constants {
 
   // CORAL INTAKE SUBSYSTEM CONSTANTS
   public static final int CORAL_INTAKE_MOTOR_CAN_ID = 25;
+  public static final double CORAL_DEFAULT_DEGREES = 120.0;
+  public static final double CORAL_CARRYING_POSITION_DEGREES = 173;
   // beam break sensor
   public static final int CORAL_BEAM_BREAK_DIO_CHANNEL = 2;
   // auto Coral Intake/Outtake Speeds
@@ -74,4 +96,7 @@ public final class Constants {
   // Path Planner PID constants
   public static final PIDConstants PATH_FOLLOWING_PID_CONSTANTS_POSITIONAL = new PIDConstants(5.1275, 0.755);
   public static final PIDConstants PATH_FOLLOWING_PID_CONSTANTS_ROTATIONAL = new PIDConstants(1.985);
+
+  public static final Distance ELEVATOR_INTAKE_POSITION = Units.Inches.of(20);
+  public static final double ELEVATOR_INTAKE_POSITION_INCHES = 20;
 }

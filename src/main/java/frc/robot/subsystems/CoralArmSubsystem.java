@@ -46,7 +46,7 @@ public class CoralArmSubsystem extends SubsystemBase {
       MotorType.kBrushless);
 
   // Coral feedforward obj
-  private final ArmFeedforward mCoralArmFeedforward = new ArmFeedforward(0, 0.69, 0.2325, 1);
+  private final ArmFeedforward mCoralArmFeedforward = new ArmFeedforward(0, 0.125, 1.015625, 0);
 
   // Coral arm encoder
   private final SparkAbsoluteEncoder mEncoder;
@@ -81,7 +81,7 @@ public class CoralArmSubsystem extends SubsystemBase {
           mCoralArmMotor.setVoltage(volts);
         }, this::handleSysIdLog, this));
 
-    mCoralPidController.setTolerance(Units.Degrees.of(0.5).in(POSITION_UNIT));
+    mCoralPidController.setTolerance(Units.Degrees.of(2.5).in(POSITION_UNIT));
   }
 
   /* ENCODER FUNCTIONS */
@@ -96,6 +96,9 @@ public class CoralArmSubsystem extends SubsystemBase {
 
   public double getArmPositionDegrees() {
     return getArmPosition().in(Units.Degrees);
+  }
+  public boolean getAtRestingPosition(){
+    return getArmPositionDegrees() >= 84 && getArmPositionDegrees() <= 88;
   }
 
   public double getArmPositionRotations() {
@@ -197,7 +200,6 @@ public class CoralArmSubsystem extends SubsystemBase {
       mCoralArmMotor.set(pSource.getAsDouble());
     });
   }
-
   // move arm to specified position
   public Command moveCoralToPositionCommand(Angle pDesiredPosition) {
     return startRun(() -> {

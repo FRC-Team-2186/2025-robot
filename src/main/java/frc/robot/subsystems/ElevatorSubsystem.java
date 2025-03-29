@@ -102,6 +102,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     return Units.Inches.of(inches);
   }
+  public boolean atIntakePosition(){
+    // return getPosition() == Units.Inches.of(Constants.ELEVATOR_INTAKE_POSITION_INCHES);
+    return getPosition().isNear(Units.Inches.of(Constants.ELEVATOR_INTAKE_POSITION_INCHES), 0.05);
+  }
 
   public LinearVelocity getVelocity() {
     var conversionFactor = (2.0 * Math.PI * Constants.ELEVATOR_SPROCKET_RADIUS.in(POSITION_UNIT));
