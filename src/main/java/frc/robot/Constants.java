@@ -34,7 +34,7 @@ public final class Constants {
 
   // Elevator Limit Switch Constants
   public static final int TOP_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = 1;
-  public static final int BOTTOM_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = 0;
+  public static final int BOTTOM_ELEVATOR_LIMIT_SWITCH_DIO_CHANNEL = 5;
 
   // Coral Reef Level Constants
   // where we want the bottom of coral payload to be at each reef level
