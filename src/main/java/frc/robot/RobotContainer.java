@@ -177,6 +177,8 @@ public class RobotContainer {
     //   mElevatorSubsystem::atIntakePosition));
     // Trigger toggleCoral = new  Trigger(() -> mElevatorSubsystem.atBottom());
     mDriverController.rightBumper().onTrue(mElevatorSubsystem.moveToHeightCommand(Units.Inches.of(20)));
+    mDriverController.a().whileTrue(mElevatorSubsystem.moveToHeightCommand(Units.Inches.of(20)));
+    mDriverController.b().whileTrue(mElevatorSubsystem.moveToHeightCommand(Units.Inches.of(30)));
   }
 
   /**
