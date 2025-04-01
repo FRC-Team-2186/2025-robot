@@ -44,7 +44,7 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 @Logged
 public class DrivetrainSubsystem extends SubsystemBase {
-  private static final LinearVelocity MAX_SPEED = FeetPerSecond.of(13);
+  private static final LinearVelocity MAX_SPEED = FeetPerSecond.of(13.5);
 
   private static final boolean PATHPLANNER_ENABLE_FEEDFORWARD = true;
 

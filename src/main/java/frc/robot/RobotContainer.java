@@ -71,15 +71,24 @@ public class RobotContainer {
 
   SwerveInputStream mDriveFieldOriented = SwerveInputStream.of(mDrivetrainSubsystem.getSwerveDrive(),
       () -> mDriverController.getLeftY() * -1,
-      () -> mDriverController.getLeftX())
-      .withControllerRotationAxis(mDriverController::getRightX)
+      () -> -mDriverController.getLeftX())
+      .withControllerRotationAxis(() -> -mDriverController.getRightX())
       .deadband(0.1)
-      .scaleTranslation(1.0)
+      .scaleTranslation(0.8)
 
-      .allianceRelativeControl(true);
+      .allianceRelativeControl(false);
 
   SwerveInputStream mDriveRobotOriented = mDriveFieldOriented.copy().robotRelative(true)
       .allianceRelativeControl(false);
+
+  SwerveInputStream mSlowerDriveFieldOriented = SwerveInputStream.of(mDrivetrainSubsystem.getSwerveDrive(),
+  () -> mDriverController.getLeftY() * 0.25 * -1,
+  () -> mDriverController.getLeftX() * 0.25)
+  .withControllerRotationAxis(() -> -mDriverController.getRightX())
+  .deadband(0.1)
+  .scaleTranslation(1.0)
+
+  .allianceRelativeControl(true);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -137,10 +146,20 @@ public class RobotContainer {
     // mDriverController.leftTrigger(0.25).whileTrue(ejectCoralCommand);
     // mDriverController.rightTrigger(0.25).whileTrue(awaitCoralCommand);
 
-    // mOperatorController.a().whileTrue(mElevatorSubsystem.moveToHeightCommand(Constants.CORAL_HEIGHT_L2));
-    // mOperatorController.b().whileTrue(mElevatorSubsystem.moveToHeightCommand(Constants.CORAL_HEIGHT_L3));
-    // mOperatorController.y().whileTrue(mElevatorSubsystem.moveToHeightCommand(Constants.CORAL_HEIGHT_L4));
+    // While true
+    // mOperatorController.a().whileTrue(mElevatorSubsystem.moveToHeightCommand(Constants.L2_CORAL_INCHES));
+    // mOperatorController.b().whileTrue(mElevatorSubsystem.moveToHeightCommand(Constants.L3_CORAL_INCHES));
+    // mOperatorController.y().whileTrue(mElevatorSubsystem.moveToHeightCommand(Constants.L4_CORAL_INCHES));
     // mOperatorController.x().whileTrue(mElevatorSubsystem.homeCommand());
+
+    // On true
+    mOperatorController.a().onTrue(mElevatorSubsystem.moveToHeightCommand(Constants.L2_CORAL_INCHES));
+    mOperatorController.b().onTrue(mElevatorSubsystem.moveToHeightCommand(Constants.L3_CORAL_INCHES));
+    mOperatorController.y().onTrue(mElevatorSubsystem.moveToHeightCommand(Constants.L4_CORAL_INCHES));
+    mOperatorController.x().onTrue(mElevatorSubsystem.moveToHeightCommand(Constants.RESTING_CORAL_INCHES));
+
+    mOperatorController.leftBumper().and(mOperatorController.rightBumper()).whileTrue(mElevatorSubsystem.homeCommand());
+
 
     // mDriverController.a().whileTrue(mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(0.0)));
     // mDriverController.b().whileTrue(mCoralArmSubsystem.moveCoralToPositionCommand(Units.Degrees.of(45.0)));
@@ -152,8 +171,7 @@ public class RobotContainer {
     mDriverController.a().onTrue(new InstantCommand(() -> mDrivetrainSubsystem.zeroGyroWithAlliance()));
     // mOperatorController.a().whileTrue(mElevatorSubsystem.directCommand(() -> mOperatorController.getRightY()));
     // mOperatorController.leftStick().whileTrue(mCoralArmSubsystem.moveCoralArmCommand(() -> mOperatorController.getLeftY()));
-
-    
+  
     mDriverController.leftTrigger().whileTrue(mIntakeSubsystem.intakeCoralCommand());
     mDriverController.rightTrigger().whileTrue(mIntakeSubsystem.ejectCoralCommand());
     mDriverController.povDown().whileTrue(mClimberSubsystem.setStateCommand(Relay.Value.kForward));
@@ -176,9 +194,9 @@ public class RobotContainer {
     //   mElevatorSubsystem.moveToHeightCommand(Units.Inches.of(Constants.ELEVATOR_INTAKE_POSITION_INCHES)),
     //   mElevatorSubsystem::atIntakePosition));
     // Trigger toggleCoral = new  Trigger(() -> mElevatorSubsystem.atBottom());
-    mDriverController.rightBumper().onTrue(mElevatorSubsystem.moveToHeightCommand(Units.Inches.of(20)));
-    mDriverController.a().whileTrue(mElevatorSubsystem.moveToHeightCommand(Units.Inches.of(20)));
-    mDriverController.b().whileTrue(mElevatorSubsystem.moveToHeightCommand(Units.Inches.of(30)));
+    // mDriverController.rightBumper().onTrue(mElevatorSubsystem.moveToHeightCommand(Units.Inches.of(20)));
+    // mDriverController.a().whileTrue(mElevatorSubsystem.moveToHeightCommand(Units.Inches.of(20)));
+    // mDriverController.b().whileTrue(mElevatorSubsystem.moveToHeightCommand(Units.Inches.of(30)));
   }
 
   /**
@@ -192,9 +210,10 @@ public class RobotContainer {
     // return new WaitCommand(15);
     // return mCommandChooser.getSelected();
 
-    // return mElevatorSubsystem.moveToHeightCommand(Constants.L2_CORAL_INCHES).andThen(mIntakeSubsystem.ejectCoralCommand());
-    // FIXME Update L2 Coral Constants
-    return mElevatorSubsystem.moveToHeightCommand(Constants.L2_CORAL_INCHES);
+    // return mIntakeSubsystem.ejectCoralCommand();
+    return mElevatorSubsystem.moveToHeightCommand(Constants.L3_CORAL_INCHES).andThen(mIntakeSubsystem.ejectCoralCommand());
+    // FIXME Update Coral Constants
+    // return mElevatorSubsystem.moveToHeightCommand(Constants.L2_CORAL_INCHES);
 
     // Autos to test(in this order)
     // return new DriveTwoMeters(mDrivetrainSubsystem).andThen(() -> mDrivetrainSubsystem.zeroGyroWithAlliance());
