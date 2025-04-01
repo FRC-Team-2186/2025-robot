@@ -84,7 +84,7 @@ public final class Constants {
   public static final AngularAcceleration CORAL_ARM_MAX_ACCELERATION = Units.DegreesPerSecondPerSecond.of(45.0);
 
   // CORAL INTAKE SUBSYSTEM CONSTANTS
-  public static final int CORAL_INTAKE_MOTOR_CAN_ID = 25;
+  public static final int CORAL_INTAKE_MOTOR_CAN_ID = 40; //!!!SID!!! - changed 040125 - to not conflict?!?!
   public static final double CORAL_DEFAULT_DEGREES = 120.0;
   public static final double CORAL_CARRYING_POSITION_DEGREES = 173;
   // beam break sensor

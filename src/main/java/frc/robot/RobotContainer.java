@@ -154,8 +154,8 @@ public class RobotContainer {
     // mOperatorController.leftStick().whileTrue(mCoralArmSubsystem.moveCoralArmCommand(() -> mOperatorController.getLeftY()));
 
     
-    // mDriverController.leftTrigger().whileTrue(mIntakeSubsystem.intakeCoralCommand());
-    // mDriverController.rightTrigger().whileTrue(mIntakeSubsystem.ejectCoralCommand());
+    mDriverController.leftTrigger().whileTrue(mIntakeSubsystem.intakeCoralCommand());
+    mDriverController.rightTrigger().whileTrue(mIntakeSubsystem.ejectCoralCommand());
     mDriverController.povDown().whileTrue(mClimberSubsystem.setStateCommand(Relay.Value.kForward));
     mDriverController.povUp().whileTrue(mClimberSubsystem.setStateCommand(Relay.Value.kReverse));
     // Toggles between Resting Position(Approximately 89 degrees) and Intake Position(approximately 35 degrees)
