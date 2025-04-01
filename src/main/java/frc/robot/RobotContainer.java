@@ -129,7 +129,7 @@ public class RobotContainer {
     // mClimberSubsystem.setDefaultCommand(mClimberSubsystem.stopCommand());
     mElevatorSubsystem.setDefaultCommand(mElevatorSubsystem.directCommand(() -> -MathUtil.applyDeadband(mOperatorController.getRightY(), 0.1)));
     // mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveRobotOriented(mDriveRobotOriented));
-    // mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(mDriveFieldOriented));
+    mDrivetrainSubsystem.setDefaultCommand(mDrivetrainSubsystem.driveFieldOriented(mDriveFieldOriented));
     // mIntakeSubsystem.setDefaultCommand(mIntakeSubsystem.handleCoralCommand(() -> 0.0));
     // mCoralArmSubsystem.setDefaultCommand(
     //   mCoralArmSubsystem.moveCoralArmCommand(() -> MathUtil.applyDeadband(mOperatorController.getRightY(), 0.15) * 0.25));
@@ -192,7 +192,10 @@ public class RobotContainer {
     // return new WaitCommand(15);
     // return mCommandChooser.getSelected();
 
-    return mElevatorSubsystem.moveToHeightCommand(Constants.L2_CORAL_INCHES).andThen(mIntakeSubsystem.ejectCoralCommand());
+    // return mElevatorSubsystem.moveToHeightCommand(Constants.L2_CORAL_INCHES).andThen(mIntakeSubsystem.ejectCoralCommand());
+    // FIXME Update L2 Coral Constants
+    return mElevatorSubsystem.moveToHeightCommand(Constants.L2_CORAL_INCHES);
+
     // Autos to test(in this order)
     // return new DriveTwoMeters(mDrivetrainSubsystem).andThen(() -> mDrivetrainSubsystem.zeroGyroWithAlliance());
     // return new mElevatorSubsystem.moveToHeightCommand(Constants.RESTING_CORAL_INCHES).andThen(mIntakeSubsystem.ejectCoralCommand());
