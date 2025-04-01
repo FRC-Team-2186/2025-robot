@@ -189,9 +189,10 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // return new InstantCommand(() -> mDrivetrainSubsystem.driveFieldOriented())
     // return new DriveTwoMeters(mDrivetrainSubsystem).andThen(() -> mDrivetrainSubsystem.zeroGyroWithAlliance());
-    return new WaitCommand(15);
+    // return new WaitCommand(15);
     // return mCommandChooser.getSelected();
 
+    return mElevatorSubsystem.moveToHeightCommand(Constants.L2_CORAL_INCHES).andThen(mIntakeSubsystem.ejectCoralCommand());
     // Autos to test(in this order)
     // return new DriveTwoMeters(mDrivetrainSubsystem).andThen(() -> mDrivetrainSubsystem.zeroGyroWithAlliance());
     // return new mElevatorSubsystem.moveToHeightCommand(Constants.RESTING_CORAL_INCHES).andThen(mIntakeSubsystem.ejectCoralCommand());
