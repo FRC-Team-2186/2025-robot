@@ -65,7 +65,7 @@ public class RobotContainer {
   private final ClimberSubsystem mClimberSubsystem = new ClimberSubsystem();
   private final ElevatorSubsystem mElevatorSubsystem = new ElevatorSubsystem();
   // private final CoralArmSubsystem mCoralArmSubsystem = new CoralArmSubsystem();
-  // private final CoralIntakeSubsystem mIntakeSubsystem = new CoralIntakeSubsystem();
+  private final CoralIntakeSubsystem mIntakeSubsystem = new CoralIntakeSubsystem();
 
   private final SendableChooser<Command> mCommandChooser;
 
@@ -192,8 +192,13 @@ public class RobotContainer {
     return new WaitCommand(15);
     // return mCommandChooser.getSelected();
 
-    // Fancy Auto
-    // return new DrivetoReefAuto(mDrivetrainSubsystem, 0, 0).andThen(mElevatorSubsystem.moveToHeightCommand(Constants.RESTING_CORAL_INCHES)).andThen(mIntakeSubsystem.ejectCoralCommand());
+    // Autos to test(in this order)
+    // return new DriveTwoMeters(mDrivetrainSubsystem).andThen(() -> mDrivetrainSubsystem.zeroGyroWithAlliance());
+    // return new mElevatorSubsystem.moveToHeightCommand(Constants.RESTING_CORAL_INCHES).andThen(mIntakeSubsystem.ejectCoralCommand());
+    // Fancy Auto(would like to be used at competition)
+    // return new DrivetoReefAuto(mDrivetrainSubsystem, 1, 3).andThen(mElevatorSubsystem.moveToHeightCommand(Constants.RESTING_CORAL_INCHES)).andThen(mIntakeSubsystem.ejectCoralCommand());
+    // Really fancy auto
+    // return new DrivetoReefAuto(mDrivetrainSubsystem, 1, 3).andThen(mElevatorSubsystem.moveToHeightCommand(Constants.L4_CORAL_INCHES)).andThen(mIntakeSubsystem.ejectCoralCommand());
   }
   public CommandXboxController getDriverController(){
     return mDriverController;

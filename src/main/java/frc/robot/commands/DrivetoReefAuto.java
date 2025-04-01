@@ -23,6 +23,7 @@ public class DrivetoReefAuto extends Command {
   public DrivetoReefAuto(DrivetrainSubsystem pSwerveDrive, double speed, double time) {
     // Use addRequirements() here to declare subsystem dependencies.
     mDriveSpeed = speed;
+    mRunTimeInSeconds = time;
     mSwerveDrive = pSwerveDrive;
     initial = new Timer();
     addRequirements(mSwerveDrive);
