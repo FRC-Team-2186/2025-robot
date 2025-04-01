@@ -40,10 +40,13 @@ public final class Constants {
   // where we want the bottom of coral payload to be at each reef level
   public static final Distance RESTING_CORAL_INCHES = Units.Inches.of(0);
 
-  public static final Distance L2_CORAL_INCHES = Units.Inches.of(10.11); // TODO: ROUGH ESTIMATE -
+  // public static final Distance L2_CORAL_INCHES = Units.Inches.of(10.11); // TODO: ROUGH ESTIMATE -
                                                                                            // CONFIRM !!!
-  public static final Distance L3_CORAL_INCHES = Units.Inches.of(29.73); // TODO: ROUGH ESTIMATE -
+  public static final Distance L2_CORAL_INCHES = Units.Inches.of(7); // TODO: ROUGH ESTIMATE -
+
+  // public static final Distance L3_CORAL_INCHES = Units.Inches.of(29.73); // TODO: ROUGH ESTIMATE -
                                                                                            // CONFIRM !!!
+  public static final Distance L3_CORAL_INCHES = Units.Inches.of(26.5);
   public static final Distance L4_CORAL_INCHES = Units.Inches.of(52.74); // TODO: ROUGH ESTIMATE -
                                                                                            // CONFIRM !!!
 
@@ -54,13 +57,13 @@ public final class Constants {
   public static final Angle CORAL_RESTING_ANGLE_UP = Units.Degrees.of(87.9);
   public static final Angle CORAL_INTAKE_ANGLE = Units.Degrees.of(35.0);
 
-  public static final Angle L2_CORAL_ANGLE = Units.Degrees.of(-36);
+  // public static final Angle L2_CORAL_ANGLE = Units.Degrees.of(-36);
 
-  public static final Angle L3_CORAL_ANGLE = Units.Degrees.of(-36);
+  // public static final Angle L3_CORAL_ANGLE = Units.Degrees.of(-36);
 
-  public static final Angle L4_CORAL_ANGLE = Units.Degrees.of(-12);
+  // public static final Angle L4_CORAL_ANGLE = Units.Degrees.of(-12);
 
-  public static final Angle INTAKE_ANGLE = Units.Degrees.of(-18);
+  // public static final Angle INTAKE_ANGLE = Units.Degrees.of(-18);
 
   // ELEVATOR CONSTANTS
   // this is measured from bottom of coral payload to ground
