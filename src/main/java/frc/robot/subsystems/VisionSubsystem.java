@@ -33,12 +33,14 @@ import swervelib.SwerveDrive;
 public class VisionSubsystem {
 
     // camera location on robot (meters)
-    Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center.
+    Transform3d robotToCam = new Transform3d(
+        new Translation3d(-0.1397, 0.1651, 0.6096),
+        new Rotation3d(Math.toRadians(-5.0),0, Math.PI / 2.0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center.
 
     // april tags layout
     AprilTagFieldLayout aprilTagFieldLayout;
     // ArduCam
-    private PhotonCamera camera = new PhotonCamera("photonvision"); // TODO: pass in actual camera name
+    private PhotonCamera camera = new PhotonCamera("vision_camera"); // TODO: pass in actual camera name
 
     // current april tag id of target we're interested in
     private int curTargetId = 0;
