@@ -6,6 +6,13 @@ package frc.robot;
 
 import com.pathplanner.lib.config.PIDConstants;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
@@ -40,15 +47,17 @@ public final class Constants {
   // where we want the bottom of coral payload to be at each reef level
   public static final Distance RESTING_CORAL_INCHES = Units.Inches.of(0);
 
-  // public static final Distance L2_CORAL_INCHES = Units.Inches.of(10.11); // TODO: ROUGH ESTIMATE -
-                                                                                           // CONFIRM !!!
+  // public static final Distance L2_CORAL_INCHES = Units.Inches.of(10.11); //
+  // TODO: ROUGH ESTIMATE -
+  // CONFIRM !!!
   public static final Distance L2_CORAL_INCHES = Units.Inches.of(7); // TODO: ROUGH ESTIMATE -
 
-  // public static final Distance L3_CORAL_INCHES = Units.Inches.of(29.73); // TODO: ROUGH ESTIMATE -
-                                                                                           // CONFIRM !!!
+  // public static final Distance L3_CORAL_INCHES = Units.Inches.of(29.73); //
+  // TODO: ROUGH ESTIMATE -
+  // CONFIRM !!!
   public static final Distance L3_CORAL_INCHES = Units.Inches.of(26.5);
   public static final Distance L4_CORAL_INCHES = Units.Inches.of(52.74); // TODO: ROUGH ESTIMATE -
-                                                                                           // CONFIRM !!!
+                                                                         // CONFIRM !!!
 
   // Coral Arm Angle Constants
   // Where we want the coral angle to be for each level
@@ -87,7 +96,7 @@ public final class Constants {
   public static final AngularAcceleration CORAL_ARM_MAX_ACCELERATION = Units.DegreesPerSecondPerSecond.of(45.0);
 
   // CORAL INTAKE SUBSYSTEM CONSTANTS
-  public static final int CORAL_INTAKE_MOTOR_CAN_ID = 40; //!!!SID!!! - changed 040125 - to not conflict?!?!
+  public static final int CORAL_INTAKE_MOTOR_CAN_ID = 40; // !!!SID!!! - changed 040125 - to not conflict?!?!
   public static final double CORAL_DEFAULT_DEGREES = 120.0;
   public static final double CORAL_CARRYING_POSITION_DEGREES = 173;
   // beam break sensor
@@ -102,4 +111,14 @@ public final class Constants {
 
   public static final Distance ELEVATOR_INTAKE_POSITION = Units.Inches.of(20);
   public static final double ELEVATOR_INTAKE_POSITION_INCHES = 20;
+
+  public static final Transform3d CAMERA_TO_ROBOT_XFORM = new Transform3d(
+      new Translation3d(-0.1397, 0.1651, 0.6096),
+      new Rotation3d(Math.toRadians(-5.0), 0, Math.PI / 2.0));
+
+  // The standard deviations of our vision estimated poses, which affect
+  // correction rate
+  // (Fake values. Experiment and determine estimation noise on an actual robot.)
+  public static final Matrix<N3, N1> VISION_SINGLE_TAG_STD_DEVS = VecBuilder.fill(4, 4, 8);
+  public static final Matrix<N3, N1> VISION_MULTI_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, 1);
 }

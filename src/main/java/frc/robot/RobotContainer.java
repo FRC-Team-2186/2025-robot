@@ -62,10 +62,11 @@ public class RobotContainer {
   @NotLogged
   private final CommandXboxController mOperatorController = new CommandXboxController(1);
 
-  private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem();
+  private final Vision mVision = new Vision();
+
+  private final DrivetrainSubsystem mDrivetrainSubsystem = new DrivetrainSubsystem(mVision);
   private final ClimberSubsystem mClimberSubsystem = new ClimberSubsystem();
   private final ElevatorSubsystem mElevatorSubsystem = new ElevatorSubsystem();
-  // private final CoralArmSubsystem mCoralArmSubsystem = new CoralArmSubsystem();
   private final CoralIntakeSubsystem mIntakeSubsystem = new CoralIntakeSubsystem();
 
   private final SendableChooser<Command> mCommandChooser;

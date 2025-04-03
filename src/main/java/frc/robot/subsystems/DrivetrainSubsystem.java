@@ -8,6 +8,10 @@ import java.io.IOException;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.RobotConfig;
@@ -34,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants;
+import frc.robot.Vision;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
@@ -54,7 +59,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
   @NotLogged
   private final SwerveDrive mSwerveDrive;
 
-  public DrivetrainSubsystem() {
+  private final Vision mVision;
+
+  public DrivetrainSubsystem(Vision pVision) {
+    mVision = pVision;
+
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
     try {
@@ -74,7 +83,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     mSwerveDrive.setModuleEncoderAutoSynchronize(false, 1);
 
     initPathPlanner();
-    // This is meant to flip the direction of the front of the robot on the alliance station we are at in competition. FIXME Enable only if facing this issue
+    // This is meant to flip the direction of the front of the robot on the alliance
+    // station we are at in competition. FIXME Enable only if facing this issue
     RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithAlliance));
   }
 
@@ -121,8 +131,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public SwerveModuleState[] getCurrentModuleStates() {
     return mSwerveDrive.getStates();
   }
-  public Pose2d getPose()
-  {
+
+  public Pose2d getPose() {
     return mSwerveDrive.getPose();
   }
 
@@ -160,30 +170,28 @@ public class DrivetrainSubsystem extends SubsystemBase {
       mSwerveDrive.driveFieldOriented(pSpeedsSupplier.get());
     });
   }
-  public void driveFieldOriented(ChassisSpeeds velocity)
-  {
+
+  public void driveFieldOriented(ChassisSpeeds velocity) {
     mSwerveDrive.driveFieldOriented(velocity);
   }
 
-
   public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
-                              DoubleSupplier headingY)
-  {
-    // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
+      DoubleSupplier headingY) {
+    // swerveDrive.setHeadingCorrection(true); // Normally you would want heading
+    // correction for this kind of control.
     return run(() -> {
 
       Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(),
-                                                                                 translationY.getAsDouble()), 0.8);
+          translationY.getAsDouble()), 0.8);
 
       // Make the robot move
       driveFieldOriented(mSwerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(), scaledInputs.getY(),
-                                                                      headingX.getAsDouble(),
-                                                                      headingY.getAsDouble(),
-                                                                      mSwerveDrive.getOdometryHeading().getRadians(),
-                                                                      mSwerveDrive.getMaximumChassisVelocity()));
+          headingX.getAsDouble(),
+          headingY.getAsDouble(),
+          mSwerveDrive.getOdometryHeading().getRadians(),
+          mSwerveDrive.getMaximumChassisVelocity()));
     });
   }
-  
 
   public Command driveRobotOriented(Supplier<ChassisSpeeds> pSpeeds) {
     return run(() -> {
@@ -193,7 +201,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // Empty
+    var visionEstimation = mVision.getEstimatedGlobalPose();
+    visionEstimation.ifPresent(est -> {
+      var stdDevs = mVision.getEstimationStdDevs();
+      mSwerveDrive.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, stdDevs);
+    });
   }
 
   private void consumePathPlannerOutput(ChassisSpeeds pRobotRelativeSpeeds, DriveFeedforwards pFeedforwards) {
@@ -218,9 +230,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
           Constants.PATH_FOLLOWING_PID_CONSTANTS_ROTATIONAL);
 
       AutoBuilder.configure(mSwerveDrive::getPose, mSwerveDrive::resetOdometry, this::getRobotVelocity,
-              (speedsRobotRelative, moduleFeedForwards) -> {
+          (speedsRobotRelative, moduleFeedForwards) -> {
             if (PATHPLANNER_ENABLE_FEEDFORWARD)
-            consumePathPlannerOutput(speedsRobotRelative, moduleFeedForwards);
+              consumePathPlannerOutput(speedsRobotRelative, moduleFeedForwards);
           }, pathFollower,
           robotCfg, this::shouldFlip, this);
     } catch (Exception err) {
@@ -229,30 +241,28 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     PathfindingCommand.warmupCommand().schedule();
   }
-   /**
-   * This will zero (calibrate) the robot to assume the current position is facing forward
+
+  /**
+   * This will zero (calibrate) the robot to assume the current position is facing
+   * forward
    * <p>
    * If red alliance rotate the robot 180 after the drviebase zero command
    */
-  public void zeroGyro()
-  {
+  public void zeroGyro() {
     mSwerveDrive.zeroGyro();
   }
-  private boolean isRedAlliance()
-  {
+
+  private boolean isRedAlliance() {
     var alliance = DriverStation.getAlliance();
     return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
   }
 
-  public void zeroGyroWithAlliance()
-  {
-    if (isRedAlliance())
-    {
+  public void zeroGyroWithAlliance() {
+    if (isRedAlliance()) {
       zeroGyro();
-      //Set the pose 180 degrees
+      // Set the pose 180 degrees
       resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));
-    } else
-    {
+    } else {
       zeroGyro();
     }
   }
