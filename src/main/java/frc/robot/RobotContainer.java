@@ -83,7 +83,7 @@ public class RobotContainer {
 
   SwerveInputStream mSlowerDriveFieldOriented = SwerveInputStream.of(mDrivetrainSubsystem.getSwerveDrive(),
   () -> mDriverController.getLeftY() * 0.25 * -1,
-  () -> mDriverController.getLeftX() * 0.25)
+  () -> mDriverController.getLeftX() * 0.25 * -1)
   .withControllerRotationAxis(() -> -mDriverController.getRightX())
   .deadband(0.1)
   .scaleTranslation(1.0)
