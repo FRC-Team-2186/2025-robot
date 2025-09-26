@@ -56,16 +56,18 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final RelativeEncoder mRelativeEncoder = mLeftMotor.getAlternateEncoder();
 
   @Logged
-  // private final ProfiledPIDController mPidController = new ProfiledPIDController(2.25, 0.0, 0.0,
-  //     MOTION_CONSTRAINTS);
+  // private final ProfiledPIDController mPidController = new
+  // ProfiledPIDController(2.25, 0.0, 0.0,
+  // MOTION_CONSTRAINTS);
   private final ProfiledPIDController mPidController = new ProfiledPIDController(3, 0.0, 0.0,
-  MOTION_CONSTRAINTS);
+      MOTION_CONSTRAINTS);
 
   // Known good-ish: kS = 0.0, kG = 0.33125, kV = 0.2255, kA = 0.5
 
   @Logged
-  // private final ElevatorFeedforward mFeedforward = new ElevatorFeedforward(0.26, 0.099847, 0.2225, 0.45);
-    private final ElevatorFeedforward mFeedforward = new ElevatorFeedforward(0.25, 0.099847, 0.2275, 0.7);
+  // private final ElevatorFeedforward mFeedforward = new
+  // ElevatorFeedforward(0.26, 0.099847, 0.2225, 0.45);
+  private final ElevatorFeedforward mFeedforward = new ElevatorFeedforward(0.25, 0.099847, 0.2275, 0.7);
 
   private final SysIdRoutine mSysIdRoutine;
 
@@ -106,8 +108,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     return Units.Inches.of(inches);
   }
-  public boolean atIntakePosition(){
-    // return getPosition() == Units.Inches.of(Constants.ELEVATOR_INTAKE_POSITION_INCHES);
+
+  public boolean atIntakePosition() {
+    // return getPosition() ==
+    // Units.Inches.of(Constants.ELEVATOR_INTAKE_POSITION_INCHES);
     return getPosition().isNear(Units.Inches.of(Constants.ELEVATOR_INTAKE_POSITION_INCHES), 0.05);
   }
 
@@ -182,6 +186,17 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
   }
 
+  /**
+   * @return The current height of the elevator, as a percentage from 0% to 100%,
+   *         where 100% = {@link Constants.L4_CORAL_INCHES}.
+   */
+  public double getHeightPercent() {
+    var currentHeight = getPositionInches();
+    var distanceFromMax = Math.max(Constants.L4_CORAL_INCHES.in(Units.Inches) - currentHeight, 0);
+
+    return distanceFromMax / Constants.L4_CORAL_INCHES.in(Units.Inches);
+  }
+
   private TrapezoidProfile.State getMotionProfileState() {
     double position = getPosition().in(Units.Inches);
     double velocity = getVelocity().in(VELOCITY_UNIT);
@@ -190,7 +205,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private void setMotorVoltage(Voltage pVolts) {
     // if (pVolts.gt(Units.Volts.zero()) && atTop()) {
-    //   pVolts = Units.Volts.zero();
+    // pVolts = Units.Volts.zero();
     // }
     if (pVolts.lt(Units.Volts.zero()) && atBottom()) {
       pVolts = Units.Volts.zero();

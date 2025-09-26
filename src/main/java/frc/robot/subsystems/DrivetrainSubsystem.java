@@ -8,10 +8,6 @@ import java.io.IOException;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.RobotConfig;
@@ -32,7 +28,6 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -49,7 +44,7 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 @Logged
 public class DrivetrainSubsystem extends SubsystemBase {
-  private static final LinearVelocity MAX_SPEED = FeetPerSecond.of(13.5);
+  public static final LinearVelocity MAX_SPEED = FeetPerSecond.of(7.5);
 
   private static final boolean PATHPLANNER_ENABLE_FEEDFORWARD = true;
 
@@ -168,6 +163,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public Command driveFieldOriented(Supplier<ChassisSpeeds> pSpeedsSupplier) {
     return run(() -> {
       mSwerveDrive.driveFieldOriented(pSpeedsSupplier.get());
+    });
+  }
+
+  public Command driveFieldOriented(Supplier<ChassisSpeeds> pSpeedsSupplier,
+      DoubleSupplier pTranslationScalarSupplier) {
+    return run(() -> {
+      var speeds = pSpeedsSupplier.get();
+      var scalar = pTranslationScalarSupplier.getAsDouble();
+
+      speeds = speeds.times(scalar);
+
+      mSwerveDrive.driveFieldOriented(speeds);
     });
   }
 

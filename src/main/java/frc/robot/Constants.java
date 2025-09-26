@@ -59,6 +59,10 @@ public final class Constants {
   public static final Distance L4_CORAL_INCHES = Units.Inches.of(52.74); // TODO: ROUGH ESTIMATE -
                                                                          // CONFIRM !!!
 
+  // Percent speed that the drivetrain should run at when the elevator is all the
+  // way up.
+  public static final double DRIVETRAIN_L4_SPEED_PERCENT = 0.25;
+
   // Coral Arm Angle Constants
   // Where we want the coral angle to be for each level
 
