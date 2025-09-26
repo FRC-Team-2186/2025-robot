@@ -7,13 +7,10 @@ package frc.robot;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.epilogue.logging.EpilogueBackend;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.DriveTwoMeters;
-import swervelib.SwerveInputStream;
 
 /**
  * The methods in this class are called automatically corresponding to each
@@ -27,9 +24,6 @@ public class Robot extends TimedRobot {
   private Command mAutonomousCommand;
 
   private final RobotContainer mRobotContainer;
-
-
-
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -85,7 +79,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     // schedule the autonomous command (example)
-  mAutonomousCommand = mRobotContainer.getAutonomousCommand();
+    mAutonomousCommand = mRobotContainer.getAutonomousCommand();
 
     if (mAutonomousCommand != null) {
       mAutonomousCommand.schedule();
