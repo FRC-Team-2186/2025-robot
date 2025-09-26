@@ -51,12 +51,12 @@ public class CoralIntakeSubsystem extends SubsystemBase {
   }
 
   public Command ejectCoralCommand() {
-    return run(() -> mCoralIntakeMotor.set(0.5)) //
-        .withTimeout(0.25) //
+    return run(() -> mCoralIntakeMotor.set(1)) //
+        .withTimeout(2) //
         .finallyDo(() -> mCoralIntakeMotor.set(0.0));
   }
 
   public Command intakeCoralCommand() {
-    return run(() -> mCoralIntakeMotor.set(-0.5)).finallyDo(() -> mCoralIntakeMotor.set(0.0));
+    return run(() -> mCoralIntakeMotor.set(-1)).finallyDo(() -> mCoralIntakeMotor.set(0.0));
   }
 }

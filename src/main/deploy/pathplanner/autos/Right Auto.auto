@@ -13,7 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "DrivetrainStop"
+            "name": "drivetrain_stop"
           }
         }
       ]

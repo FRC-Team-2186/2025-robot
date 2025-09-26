@@ -13,13 +13,19 @@
         {
           "type": "named",
           "data": {
-            "name": "DrivetrainStop"
+            "name": "elevator_to_l4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "drop_coral"
           }
         }
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

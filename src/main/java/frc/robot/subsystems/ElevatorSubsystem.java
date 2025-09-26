@@ -56,13 +56,17 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final RelativeEncoder mRelativeEncoder = mLeftMotor.getAlternateEncoder();
 
   @Logged
-  private final ProfiledPIDController mPidController = new ProfiledPIDController(2.25, 0.0, 0.0,
-      MOTION_CONSTRAINTS);
+  // private final ProfiledPIDController mPidController = new ProfiledPIDController(2.25, 0.0, 0.0,
+  //     MOTION_CONSTRAINTS);
+  private final ProfiledPIDController mPidController = new ProfiledPIDController(3, 0.0, 0.0,
+  MOTION_CONSTRAINTS);
 
   // Known good-ish: kS = 0.0, kG = 0.33125, kV = 0.2255, kA = 0.5
 
   @Logged
-  private final ElevatorFeedforward mFeedforward = new ElevatorFeedforward(0.26, 0.099847, 0.2225, 0.45);
+  // private final ElevatorFeedforward mFeedforward = new ElevatorFeedforward(0.26, 0.099847, 0.2225, 0.45);
+    private final ElevatorFeedforward mFeedforward = new ElevatorFeedforward(0.25, 0.099847, 0.2275, 0.7);
+
   private final SysIdRoutine mSysIdRoutine;
 
   public ElevatorSubsystem() {
@@ -185,9 +189,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   private void setMotorVoltage(Voltage pVolts) {
-    if (pVolts.gt(Units.Volts.zero()) && atTop()) {
-      pVolts = Units.Volts.zero();
-    }
+    // if (pVolts.gt(Units.Volts.zero()) && atTop()) {
+    //   pVolts = Units.Volts.zero();
+    // }
     if (pVolts.lt(Units.Volts.zero()) && atBottom()) {
       pVolts = Units.Volts.zero();
     }
